@@ -4,6 +4,8 @@ const CACHE_NAME = "safewalk-shell-v6";
 const APP_SHELL = [
   "./",
   "./index.html",
+  "./home.html",
+  "./login.html",
   "./track.html",
   "./safety.html",
   "./privacy.html",
@@ -13,6 +15,8 @@ const APP_SHELL = [
   "./css/style.css",
   "./js/utils.js",
   "./js/i18n.js",
+  "./js/login.js",
+  "./js/home.js",
   "./js/app.js",
   "./js/map.js",
   "./js/share.js",

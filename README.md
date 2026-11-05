@@ -27,6 +27,8 @@ Then open <http://localhost:8000>. Stop the server with `Ctrl+C`. If Python is u
 ```text
 safewalk/
 ├── index.html             # Walking route planner and recent places
+├── home.html              # User home page with quick links and saved trip summary
+├── login.html             # Frontend-only sign-in screen preview
 ├── track.html             # Saved trip and one-time sharing
 ├── safety.html            # Emergency links and optional safety demos
 ├── privacy.html           # Data-use explanation and clear-data action
@@ -39,6 +41,8 @@ safewalk/
 │   └── style.css          # Shared responsive, dark-mode design system
 ├── js/
 │   ├── app.js             # Onboarding, connectivity, service-worker setup
+│   ├── login.js           # Preview-only login form; sends/stores no credentials
+│   ├── home.js            # Reads the saved trip for the local home-page summary
 │   ├── utils.js           # Storage, sanitization, and accessible toasts
 │   ├── i18n.js            # English/Hindi language selection and translations
 │   ├── map.js             # Lazy map, search, walking route, recent places
@@ -64,11 +68,15 @@ safewalk/
 - Sharing uses the browser share sheet or a user-controlled copy/prompt fallback. The user chooses a recipient and sends the message.
 - A visual-only fake-call screen and quick screen cover; neither makes a call or sends an alert.
 - First-visit explanation, privacy page and clear-data action, responsive desktop/mobile navigation, keyboard focus styling, reduced-motion support, and system dark mode.
+- A sign-in page preview is included, but there is no authentication, account creation, or backend. The preview form never sends or stores entered values.
+- After submitting the preview sign-in form, the browser opens the SafeWalk home page. The home page offers shortcuts to the planner, trip sharing, and safety tools, plus a saved-trip summary when available.
 - PWA manifest and service worker cache same-origin app files for offline page access. An offline banner explains that maps, search, routes, and external sharing require a connection.
 
 ## Important limits and privacy
 
 - There is no live tracking, background location, guardian account, automatic SOS, or emergency dispatch. The 112/1091/181 links open the device's phone app.
+- There is no user account or authentication service; the sign-in page is a visual frontend preview only.
+- The home page is a local dashboard, not a protected account page; no authentication state is created.
 - The app does not rate route safety. Route and travel-time estimates are not verified safety information; check local conditions and trusted official sources before your walk.
 - The safety checklist is general preparation guidance, not exhaustive advice, emergency monitoring, or a guarantee of safety.
 - Alternative routes compare distance and estimated walking time only. The app does not receive verified incident, lighting, or route-risk data.
@@ -92,4 +100,6 @@ safewalk/
 - [ ] Privacy: save a trusted contact and trip, clear SafeWalk data, reload, and confirm SafeWalk-owned entries are gone.
 - [ ] Safety checklist: check items, reload to confirm progress is saved on this device, reset it, and verify privacy data clearing also removes checklist progress.
 - [ ] Dark mode and reduced motion: enable each operating-system preference and check contrast, focus indicators, and animations.
+- [ ] Sign-in preview: submit sample-only values and confirm the page explains that sign-in is unavailable and clears the fields without sending or storing them.
+- [ ] Home page: confirm the preview sign-in opens `home.html`, shortcuts open their respective tools, and a locally saved trip is summarized when present.
 - [ ] Emergency links: verify the link target only (`tel:112`, `tel:1091`, `tel:181`); do not place a test emergency call.
