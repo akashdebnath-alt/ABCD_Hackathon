@@ -183,7 +183,7 @@
     const coordinates = [origin.coordinates, destination.coordinates]
       .map((point) => point.join(","))
       .join(";");
-    const url = `https://routing.openstreetmap.de/routed-foot/route/v1/driving/${coordinates}?overview=full&geometries=geojson&alternatives=false&steps=true`;
+    const url = `https://routing.openstreetmap.de/routed-foot/route/v1/driving/${coordinates}?overview=full&geometries=geojson&alternatives=true&steps=true`;
     const response = await fetchPublicService(url, "walking-directions");
     if (!response.ok) {
       if (response.status === 429) {
@@ -208,24 +208,26 @@
         `The public walking-directions service couldn't calculate this route${data?.code ? ` (${data.code})` : ""}. Try again later.`,
       );
     }
-    const routeCoordinates = data.routes[0].geometry?.coordinates;
-    if (
-      !Array.isArray(routeCoordinates) ||
-      routeCoordinates.length < 2 ||
-      routeCoordinates.some(
-        (point) =>
-          !Array.isArray(point) ||
-          point.length < 2 ||
-          !Number.isFinite(point[0]) ||
-          !Number.isFinite(point[1]),
-      )
-    ) {
-      throw new Error("The walking-directions service returned an invalid route. Please try again.");
-    }
-    if (!Number.isFinite(data.routes[0].distance) || data.routes[0].distance < 0) {
+    const routes = data.routes.filter((route) => {
+      const routeCoordinates = route.geometry?.coordinates;
+      return (
+        Array.isArray(routeCoordinates) &&
+        routeCoordinates.length >= 2 &&
+        routeCoordinates.every(
+          (point) =>
+            Array.isArray(point) &&
+            point.length >= 2 &&
+            Number.isFinite(point[0]) &&
+            Number.isFinite(point[1]),
+        ) &&
+        Number.isFinite(route.distance) &&
+        route.distance >= 0
+      );
+    }).slice(0, 3);
+    if (!routes.length) {
       throw new Error("The walking-directions service returned an invalid distance. Please try again.");
     }
-    return data.routes[0];
+    return routes;
   }
 
   function renderPlaceGroup(container, name, places, selectedIndex) {
@@ -400,7 +402,8 @@
     return savedSteps;
   }
 
-  function showRoute(origin, destination, route, queries) {
+  function showRoute(origin, destination, routes, queries, selectedIndex) {
+    const route = routes[selectedIndex];
     if (routeLayer) {
       map.removeLayer(routeLayer);
     }
@@ -438,6 +441,30 @@
       `${origin.label} to ${destination.label}`;
     document.querySelector("#route-distance").textContent = `${distance} km`;
     document.querySelector("#route-duration").textContent = `~${duration} min`;
+
+    const routeOptions = document.querySelector("#route-options");
+    routeOptions.replaceChildren();
+    routes.forEach((option, index) => {
+      const button = document.createElement("button");
+      button.type = "button";
+      button.className = "route-option";
+      button.setAttribute("aria-pressed", String(index === selectedIndex));
+      const label = document.createElement("strong");
+      label.textContent = `Route ${index + 1}${index === 0 ? " · default" : ""}`;
+      const details = document.createElement("small");
+      const optionDuration = Math.max(
+        1,
+        Math.round((option.distance / 1000 / WALKING_SPEED_KMH) * 60),
+      );
+      details.textContent = `${(option.distance / 1000).toFixed(1)} km · ~${optionDuration} min`;
+      const content = document.createElement("span");
+      content.append(label, details);
+      button.append(content);
+      button.addEventListener("click", () =>
+        showRoute(origin, destination, routes, queries, index),
+      );
+      routeOptions.append(button);
+    });
 
     currentRoute = {
       origin: origin.label,
@@ -491,8 +518,8 @@
     setStatus("Getting walking directions from the public routing service…");
     try {
       await ensureMap();
-      const route = await requestWalkingRoute(origin, destination);
-      showRoute(origin, destination, route, queries);
+      const routes = await requestWalkingRoute(origin, destination);
+      showRoute(origin, destination, routes, queries, 0);
       if (queries.origin && queries.destination) {
         saveRecentSearch(queries.origin, queries.destination);
       }
