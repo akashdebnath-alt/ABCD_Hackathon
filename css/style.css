@@ -1,1 +1,16 @@
-/* style */ 
+body { margin:0; font-family: Arial, sans-serif; }
+header { background:#5b2a86; color:#fff; padding:10px 14px; font-size:20px; font-weight:bold; }
+header small { font-size:12px; font-weight:normal; margin-left:8px; opacity:.85; }
+#map { height: 60vh; }
+#panel { padding:10px; }
+#cards { display:flex; gap:10px; }
+.card { flex:1; padding:10px; border-radius:10px; color:#fff; text-align:center; }
+.card.fast { background:#d9534f; }
+.card.safe { background:#2e9e5b; }
+#buttons { display:flex; gap:8px; margin-top:10px; }
+button { flex:1; padding:14px 6px; font-size:15px; border:none; border-radius:10px; background:#5b2a86; color:#fff; }
+#sosBtn { background:#c00; font-weight:bold; }
+.hint { font-size:12px; color:#666; text-align:center; }
+#fakeCall { position:fixed; inset:0; background:#111; color:#fff; text-align:center; padding-top:30vh; z-index:9999; }
+#fakeCall.hidden { display:none; }
+#endCall { background:#c00; width:60%; margin-top:40px; }

@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SafeWalk</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header>🛡️ SafeWalk <small>Prevention-first, not panic-first</small></header>
+  <div id="map"></div>
+
+  <div id="panel">
+    <div id="cards">
+      <div class="card fast">⚡ Fastest route<br><b id="fastScore">-</b>/10</div>
+      <div class="card safe">🛡️ Safest route<br><b id="safeScore">-</b>/10</div>
+    </div>
+    <div id="buttons">
+      <button id="shareBtn">📍 Share live location</button>
+      <button id="fakeBtn">📞 Fake call</button>
+      <button id="sosBtn">🚨 SOS</button>
+    </div>
+    <p class="hint">Tap anywhere on the map to report an unsafe spot.</p>
+  </div>
+
+  <div id="fakeCall" class="hidden">
+    <h2>Mom</h2><p>Incoming call...</p>
+    <button id="endCall">Decline</button>
+  </div>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="js/score.js"></script>
+  <script src="js/share.js"></script>
+  <script src="js/map.js"></script>
+</body>
+</html>
