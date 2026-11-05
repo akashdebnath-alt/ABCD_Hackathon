@@ -57,7 +57,7 @@ safewalk/
 - Copy or print a route summary and its directions from the planner or saved-trip page.
 - Select English or Hindi on the planner, trip-sharing, and safety pages. The language choice is saved in this browser.
 - Edit or reopen a planned route from its summary or saved trip. Search results and routes rely on public services and explain when those services are unavailable.
-- Current-location starting point and one-time location sharing request browser permission only after the user presses the related button.
+- Current-location starting point and one-time location sharing request browser permission only after the user presses the related button. Current-location starts can use Photon to look up a place name; if precise location is unavailable, an optional approximate fallback uses ipapi.co after confirmation.
 - Recent place searches and saved trip information are kept in this browser's local storage.
 - Optional trusted-contact name and phone number are stored on-device; the call link opens the device's dialer.
 - Interactive before, during, urgent-help, and arrival checklist. Checked items stay in this browser and can be reset or cleared from the privacy page.
@@ -72,7 +72,7 @@ safewalk/
 - The app does not rate route safety. Route and travel-time estimates are not verified safety information; check local conditions and trusted official sources before your walk.
 - The safety checklist is general preparation guidance, not exhaustive advice, emergency monitoring, or a guarantee of safety.
 - Alternative routes compare distance and estimated walking time only. The app does not receive verified incident, lighting, or route-risk data.
-- Place names are sent to Photon for geocoding when a route is requested; route coordinates are sent to the public FOSSGIS walking-routing service. Map tiles come from OpenStreetMap. These services may receive network metadata such as an IP address under their own policies.
+- Place names are sent to Photon for geocoding when a route is requested; route coordinates are sent to the public FOSSGIS walking-routing service. When you use the current-location button, your coordinates are sent to Photon to look up the place name shown as the starting point. If precise location fails and you agree to the approximate fallback, your IP address is sent to ipapi.co. Map tiles come from OpenStreetMap. These services may receive network metadata such as an IP address under their own policies.
 - SafeWalk itself has no server. Saved trip, recent-place, contact, language, and onboarding values remain in browser local storage until removed or cleared. Browser storage is not encrypted by this app.
 - Clearing SafeWalk data removes those app-owned local-storage entries from this browser. It does not erase browser history, shared messages, service-worker cache, or information held by external services.
 - Offline mode only serves cached app pages. It cannot provide fresh maps, geocoding, routing, or guaranteed message delivery.
@@ -85,6 +85,7 @@ safewalk/
 - [ ] Switch between English and Hindi on the planner, trip-sharing, and safety pages; confirm the choice persists across pages and reloads.
 - [ ] Mobile viewport: check the bottom navigation, safe-area spacing, touch targets, and that page content is not hidden behind the navigation.
 - [ ] Location denied: deny the browser permission; confirm the page explains how to continue without location and no location is requested on page load.
+- [ ] Location unavailable: confirm the approximate-location prompt explains IP sharing and declining leaves the starting point unchanged.
 - [ ] Location allowed: press a location action; confirm a one-time link only appears in the chosen share/copy flow and no location stream starts.
 - [ ] Offline: load once, disconnect the network, navigate to cached pages, and confirm the offline banner/fallback explains which features need a connection.
 - [ ] Keyboard only: use Tab/Shift+Tab, Enter/Space, Escape, skip link, onboarding dialog, fake-call demo, and quick screen cover; confirm visible focus and focus remains in dialogs.

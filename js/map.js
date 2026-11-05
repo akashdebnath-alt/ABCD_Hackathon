@@ -32,6 +32,8 @@
   let routeLayer;
   let currentRoute;
   let currentOrigin;
+  let locationRequestId = 0;
+  const liveLocationLabel = "Your current location";
   let pendingPlaces;
 
   function setStatus(message, isError) {
@@ -295,7 +297,7 @@
       button.addEventListener("click", () => {
         originInput.value = item.origin;
         destinationInput.value = item.destination;
-        currentOrigin = undefined;
+        clearLiveOrigin();
         form.requestSubmit();
       });
       entry.append(button);
@@ -665,7 +667,7 @@
       ? ""
       : (currentRoute.originQuery || currentRoute.origin);
     destinationInput.value = currentRoute.destinationQuery;
-    currentOrigin = undefined;
+    clearLiveOrigin();
     clearPreviousRoute();
     setStatus(
       originInput.value
@@ -705,37 +707,184 @@
     }
   }
 
-  function useCurrentLocation() {
+  function clearLiveOrigin() {
+    currentOrigin = undefined;
+    locationRequestId += 1;
+  }
+
+  function noteStaleLookup() {
+    setStatus("Location lookup skipped because you changed the starting point.");
+  }
+
+  function applyOrigin(coords, label, message) {
+    currentOrigin = {
+      coordinates: [coords.longitude, coords.latitude],
+      label,
+    };
+    originInput.value = i18n.locationLabel(label);
+    setStatus(message);
+  }
+
+  function getPosition(options) {
+    return new Promise((resolve, reject) =>
+      navigator.geolocation.getCurrentPosition(resolve, reject, options),
+    );
+  }
+
+  function formatReversePlace(properties) {
+    const street = [properties.housenumber, properties.street].filter(Boolean).join(" ");
+    const first = properties.name || street;
+    const area = properties.district || properties.locality || properties.suburb;
+    const city = properties.city || properties.county || properties.state;
+    const parts = [];
+    [first, area, city].forEach((part) => {
+      if (part && !parts.includes(part)) {
+        parts.push(part);
+      }
+    });
+    return parts.slice(0, 3).join(", ");
+  }
+
+  async function reverseGeocode(coords) {
+    const controller = new AbortController();
+    const timer = window.setTimeout(() => controller.abort(), 6000);
+    try {
+      const url = new URL("https://photon.komoot.io/reverse");
+      url.searchParams.set("lon", String(coords.longitude));
+      url.searchParams.set("lat", String(coords.latitude));
+      url.searchParams.set("limit", "1");
+      const response = await fetch(url, { signal: controller.signal });
+      if (!response.ok) {
+        return "";
+      }
+      const data = await response.json();
+      const feature = data.features && data.features[0];
+      return feature ? utils.sanitizeText(formatReversePlace(feature.properties || {}), 160) : "";
+    } catch {
+      return "";
+    } finally {
+      window.clearTimeout(timer);
+    }
+  }
+
+  async function setLiveOrigin(coords, requestId) {
+    if (requestId !== locationRequestId) {
+      noteStaleLookup();
+      return;
+    }
+    applyOrigin(coords, liveLocationLabel, "Location found. Looking up the place name…");
+    const name = await reverseGeocode(coords);
+    if (requestId !== locationRequestId) {
+      noteStaleLookup();
+      return;
+    }
+    if (name) {
+      applyOrigin(coords, name, `Starting point set to ${name}. Location is only used if you request directions.`);
+    } else {
+      setStatus("Starting point set. The place name isn't available; location is only used if you request directions.");
+    }
+  }
+
+  async function approximateLocation() {
+    let data;
+    try {
+      const response = await fetch("https://ipapi.co/json/");
+      if (!response.ok) {
+        throw new Error("service unavailable");
+      }
+      data = await response.json();
+    } catch {
+      throw new Error("Approximate location couldn't be reached. Enter a starting place instead.");
+    }
+    if (!data || !Number.isFinite(data.latitude) || !Number.isFinite(data.longitude)) {
+      throw new Error("Approximate location couldn't be determined. Enter a starting place instead.");
+    }
+    const place = [data.city, data.region].filter(Boolean).join(", ");
+    return {
+      latitude: data.latitude,
+      longitude: data.longitude,
+      label: utils.sanitizeText(
+        i18n.locationLabel(place ? `Near ${place} (approximate)` : "Your approximate location"),
+        160,
+      ),
+    };
+  }
+
+  async function useCurrentLocation() {
+    if (!window.isSecureContext) {
+      setStatus(
+        "Location only works on https:// or http://localhost. Open SafeWalk through a local server (not by double-clicking the file), then try again.",
+        true,
+      );
+      return;
+    }
     if (!navigator.geolocation) {
       setStatus("Location isn't supported by this browser. Enter a starting place instead.", true);
       return;
     }
 
+    clearLiveOrigin();
+    const requestId = locationRequestId;
     locationButton.disabled = true;
     setStatus("Waiting for your location permission…");
-    navigator.geolocation.getCurrentPosition(
-      ({ coords }) => {
-        currentOrigin = {
-          coordinates: [coords.longitude, coords.latitude],
-          label: "Your current location",
-        };
-          originInput.value = i18n.t(currentOrigin.label);
-        locationButton.disabled = false;
-        setStatus("Starting point set. Location is only used if you request directions.");
-      },
-      (error) => {
-        const messages = {
-          1: "Location permission was denied. Enter a starting place instead.",
-          2: "Your location couldn't be determined. Try again or enter a place.",
-          3: "Location request timed out. Try again or enter a place.",
-        };
-        locationButton.disabled = false;
-        setStatus(messages[error.code] || "Couldn't access your location.", true);
-      },
-      { enableHighAccuracy: false, timeout: 10000, maximumAge: 60000 },
-    );
-  }
+    let failure;
 
+    try {
+      try {
+        const { coords } = await getPosition({ enableHighAccuracy: false, timeout: 10000, maximumAge: 60000 });
+        await setLiveOrigin(coords, requestId);
+        return;
+      } catch (error) {
+        if (error.code === undefined) {
+          throw error;
+        }
+        failure = error;
+      }
+
+      if (failure.code === 2 || failure.code === 3) {
+        setStatus("Still looking for your location… trying again with higher accuracy.");
+        try {
+          const { coords } = await getPosition({ enableHighAccuracy: true, timeout: 20000, maximumAge: 0 });
+          await setLiveOrigin(coords, requestId);
+          return;
+        } catch (error) {
+          if (error.code === undefined) {
+            throw error;
+          }
+          failure = error;
+        }
+      }
+
+      if (failure.code === 1) {
+        setStatus(
+          "Location permission is blocked. Click the icon beside the address bar, open Site settings, set Location to Allow, reload, and try again. Or enter a starting place.",
+          true,
+        );
+        return;
+      }
+
+      const useApproximate = window.confirm(i18n.t(
+        "Your precise location isn't available. Use an approximate, city-level location based on your IP address instead? This sends your IP address to ipapi.co.",
+      ));
+      if (!useApproximate) {
+        setStatus("Location couldn't be determined. Enter a starting place instead.", true);
+        return;
+      }
+
+      try {
+        const place = await approximateLocation();
+        if (requestId === locationRequestId) {
+          applyOrigin(place, place.label, "Approximate (city-level) starting point set. For an exact start, type a place.");
+        } else {
+          noteStaleLookup();
+        }
+      } catch (error) {
+        setStatus(error.message, true);
+      }
+    } finally {
+      locationButton.disabled = false;
+    }
+  }
   async function shareCurrentRoute() {
     if (!currentRoute) {
       return;
@@ -779,14 +928,12 @@
     ensureMap().catch((error) => utils.showToast(error.message, "error"));
   }
 
-  originInput.addEventListener("input", () => {
-    currentOrigin = undefined;
-  });
+  originInput.addEventListener("input", clearLiveOrigin);
   placeChoices.addEventListener("change", selectPlace);
   form.addEventListener("submit", planRoute);
   window.addEventListener("safewalk:languagechange", () => {
-    if (currentOrigin && ["Your current location", "आपका वर्तमान स्थान"].includes(originInput.value)) {
-      originInput.value = i18n.t("Your current location");
+    if (currentOrigin) {
+      originInput.value = i18n.locationLabel(currentOrigin.label);
     }
     if (currentRoute) {
       document.querySelector("#route-summary").textContent =

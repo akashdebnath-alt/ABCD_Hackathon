@@ -27,6 +27,7 @@
       "पैदल मार्ग देखें और तय करें कि आप क्या साझा करना चाहते हैं।",
     "Starting point": "शुरुआती स्थान",
     "Your current location": "आपका वर्तमान स्थान",
+    "Your approximate location": "आपका अनुमानित स्थान",
     "Enter a starting place": "शुरुआती स्थान दर्ज करें",
     "Use my current location": "मेरा वर्तमान स्थान इस्तेमाल करें",
     "Destination": "गंतव्य",
@@ -254,9 +255,30 @@
       "गंतव्य वापस रखा गया। शुरुआती स्थान फिर से तय करने के लिए “मेरा वर्तमान स्थान इस्तेमाल करें” दबाएँ।",
     "Location isn't supported by this browser. Enter a starting place instead.":
       "यह ब्राउज़र स्थान सुविधा का समर्थन नहीं करता। इसके बजाय शुरुआती स्थान दर्ज करें।",
+    "Location only works on https:// or http://localhost. Open SafeWalk through a local server (not by double-clicking the file), then try again.":
+      "स्थान सुविधा केवल https:// या http://localhost पर काम करती है। SafeWalk को स्थानीय सर्वर से खोलें (फ़ाइल पर सीधे डबल-क्लिक न करें) और फिर कोशिश करें।",
     "Waiting for your location permission…": "स्थान की अनुमति की प्रतीक्षा है…",
     "Starting point set. Location is only used if you request directions.":
       "शुरुआती स्थान तय है। स्थान का उपयोग केवल दिशा-निर्देश माँगने पर होगा।",
+    "Location found. Looking up the place name…": "स्थान मिल गया। जगह का नाम खोजा जा रहा है…",
+    "Starting point set. The place name isn't available; location is only used if you request directions.":
+      "शुरुआती स्थान तय है। जगह का नाम उपलब्ध नहीं है; स्थान का उपयोग केवल दिशा-निर्देश माँगने पर होगा।",
+    "Still looking for your location… trying again with higher accuracy.":
+      "स्थान खोजा जा रहा है… अधिक सटीकता से फिर कोशिश की जा रही है।",
+    "Location permission is blocked. Click the icon beside the address bar, open Site settings, set Location to Allow, reload, and try again. Or enter a starting place.":
+      "स्थान की अनुमति अवरुद्ध है। पता-पट्टी के पास के आइकन पर क्लिक करें, साइट सेटिंग खोलें, स्थान को अनुमति दें, पृष्ठ फिर लोड करके कोशिश करें। या शुरुआती स्थान दर्ज करें।",
+    "Your precise location isn't available. Use an approximate, city-level location based on your IP address instead? This sends your IP address to ipapi.co.":
+      "आपका सटीक स्थान उपलब्ध नहीं है। क्या इसके बजाय आपके IP पते से अनुमानित, शहर-स्तरीय स्थान इस्तेमाल करें? इससे आपका IP पता ipapi.co को भेजा जाएगा।",
+    "Location couldn't be determined. Enter a starting place instead.":
+      "स्थान का पता नहीं चल सका। इसके बजाय शुरुआती स्थान दर्ज करें।",
+    "Approximate location couldn't be reached. Enter a starting place instead.":
+      "अनुमानित स्थान सेवा तक पहुँचा नहीं जा सका। इसके बजाय शुरुआती स्थान दर्ज करें।",
+    "Approximate location couldn't be determined. Enter a starting place instead.":
+      "अनुमानित स्थान का पता नहीं चल सका। इसके बजाय शुरुआती स्थान दर्ज करें।",
+    "Approximate (city-level) starting point set. For an exact start, type a place.":
+      "अनुमानित (शहर-स्तरीय) शुरुआती स्थान तय है। सटीक शुरुआत के लिए कोई जगह लिखें।",
+    "Location lookup skipped because you changed the starting point.":
+      "आपने शुरुआती स्थान बदल दिया, इसलिए स्थान खोज रोक दी गई।",
     "Couldn't access your location.": "आपका स्थान प्राप्त नहीं हो सका।",
     "Location permission was denied. Enter a starting place instead.":
       "स्थान की अनुमति अस्वीकार की गई। इसके बजाय शुरुआती स्थान दर्ज करें।",
@@ -484,6 +506,10 @@
       if (match) {
         return `अलर्ट तैयार नहीं हो सका: ${match[1]}`;
       }
+      match = message.match(/^Starting point set to (.+)\. Location is only used if you request directions\.$/);
+      if (match) {
+        return `शुरुआती स्थान ${match[1]} तय है। स्थान का उपयोग केवल दिशा-निर्देश माँगने पर होगा।`;
+      }
       match = message.match(/^The public walking-directions service couldn't calculate this route(?: \(([^)]+)\))?\. Try again later\.$/);
       if (match) {
         return `सार्वजनिक पैदल दिशा-निर्देश सेवा यह मार्ग नहीं निकाल सकी${match[1] ? ` (${match[1]})` : ""}। बाद में फिर कोशिश करें।`;
@@ -660,12 +686,29 @@
   }
 
   function routeTitle(origin, destination) {
-    const localizedOrigin = origin === "Your current location"
-      ? translateDynamic(origin)
-      : origin;
+    const localizedOrigin = locationLabel(origin);
+    const localizedDestination = locationLabel(destination);
     return language === "hi"
-      ? `${localizedOrigin} से ${destination} तक`
-      : `${localizedOrigin} to ${destination}`;
+      ? `${localizedOrigin} से ${localizedDestination} तक`
+      : `${localizedOrigin} to ${localizedDestination}`;
+  }
+
+  function locationLabel(label) {
+    if (language === "hi") {
+      const direct = translations[label];
+      if (direct) {
+        return direct;
+      }
+      const match = label.match(/^Near (.+) \(approximate\)$/);
+      return match ? `${match[1]} के पास (अनुमानित)` : label;
+    }
+
+    const direct = hindiToEnglish.get(label);
+    if (direct) {
+      return direct;
+    }
+    const match = label.match(/^(.+) के पास \(अनुमानित\)$/);
+    return match ? `Near ${match[1]} (approximate)` : label;
   }
 
   function distance(value) {
@@ -706,6 +749,7 @@
     walkEstimate,
     routeOption,
     routeTitle,
+    locationLabel,
     distance,
     duration,
     step,
