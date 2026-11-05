@@ -4,13 +4,23 @@ SafeWalk is a responsive, browser-only walking-route and personal safety demo bu
 
 ## Run locally
 
-Use VS Code's Live Server extension and open `index.html`, or run a static server from the `safewalk` directory:
+Do not open `index.html` directly as a `file://` URL. Use a local web server so browser features such as geolocation and service workers work correctly.
+
+**VS Code Live Server**
+
+1. Open this project folder in VS Code and install the Live Server extension if needed.
+2. Right-click `index.html` and select **Open with Live Server**, or select **Go Live** in the status bar.
+3. In the browser, confirm the address starts with `http://localhost` or `http://127.0.0.1`.
+
+**Python alternative**
+
+From the project folder, run:
 
 ```powershell
-npx --yes http-server . -p 8000
+py -m http.server 8000
 ```
 
-Open <http://localhost:8000>. The `npx` command is only a local static-file server; it does not add a package or `package.json` to this project. A localhost/HTTPS origin is required for browser geolocation, service workers, and installable PWA behavior. Stop the server with `Ctrl+C`.
+Then open <http://localhost:8000>. Stop the server with `Ctrl+C`. If Python is unavailable, use Live Server. A localhost/HTTPS origin is required for browser geolocation, service workers, and installable PWA behavior.
 
 ## Folder structure
 
@@ -31,18 +41,15 @@ safewalk/
 │   ├── app.js             # Onboarding, connectivity, service-worker setup
 │   ├── utils.js           # Storage, sanitization, and accessible toasts
 │   ├── map.js             # Lazy map, search, walking route, recent places
-│   ├── score.js           # Illustrative sample-zone indicator
 │   ├── share.js           # User-triggered share/clipboard helpers
 │   ├── track.js           # Saved trip and one-time location sharing
 │   ├── safety.js          # Trusted contact, alert sharing, visual demos
 │   └── privacy.js         # User-requested local data clearing
-└── data/
-    └── zones.json         # Illustrative Delhi demo zones
 ```
 
 ## Features
 
-- Responsive route planner with lazy-loaded Leaflet map, place search, walking route, distance, and estimated time.
+- Responsive route planner with lazy-loaded Leaflet map, place search, walking route, distance, and estimated time. These route details are not a safety assessment.
 - Current-location starting point and one-time location sharing request browser permission only after the user presses the related button.
 - Recent place searches and saved trip information are kept in this browser's local storage.
 - Optional trusted-contact name and phone number are stored on-device; the call link opens the device's dialer.
@@ -54,15 +61,15 @@ safewalk/
 ## Important limits and privacy
 
 - There is no live tracking, background location, guardian account, automatic SOS, or emergency dispatch. The 112/1091/181 links open the device's phone app.
-- The safety-zone file contains illustrative Delhi sample data only. The numeric demo indicator is not verified safety information and must not be used as a real-world risk assessment.
+- The app does not rate route safety. Route and travel-time estimates are not verified safety information; check local conditions and trusted official sources before your walk.
 - Place names are sent to Photon for geocoding when a route is requested; route coordinates are sent to the public FOSSGIS walking-routing service. Map tiles come from OpenStreetMap. These services may receive network metadata such as an IP address under their own policies.
 - SafeWalk itself has no server. Saved trip, recent-place, contact, and onboarding values remain in browser local storage until removed or cleared. Browser storage is not encrypted by this app.
 - Clearing SafeWalk data removes those app-owned local-storage entries from this browser. It does not erase browser history, shared messages, service-worker cache, or information held by external services.
-- Offline mode only serves the cached app shell and sample zone data. It cannot provide fresh maps, geocoding, routing, or guaranteed message delivery.
+- Offline mode only serves cached app pages. It cannot provide fresh maps, geocoding, routing, or guaranteed message delivery.
 
 ## Manual testing checklist
 
-- [ ] Desktop: plan a route between two places; confirm route line, distance, ETA, and explicit demo-data wording.
+- [ ] Desktop: plan a route between two places; confirm route line, distance, ETA, and that no safety rating is shown or implied.
 - [ ] Desktop: save the trip, open Share trip, share/copy details, and remove the saved trip.
 - [ ] Mobile viewport: check the bottom navigation, safe-area spacing, touch targets, and that page content is not hidden behind the navigation.
 - [ ] Location denied: deny the browser permission; confirm the page explains how to continue without location and no location is requested on page load.
