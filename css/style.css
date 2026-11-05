@@ -113,10 +113,37 @@ h1 { margin: 13px 0 10px; font-size: clamp(32px, 3.2vw, 43px); line-height: 1.13
 .map-hint span { margin-right: 5px; color: var(--green); }
 .leaflet-container { font-family: "DM Sans", sans-serif; }
 
+.tracking-shell {
+  display: grid;
+  grid-template-columns: minmax(340px, 430px) minmax(0, 1fr);
+  gap: 48px;
+  max-width: 1500px;
+  min-height: calc(100vh - 76px);
+  margin: 0 auto;
+  padding: 54px 6.1% 46px;
+}
+
+.tracking-panel { padding: 10px 0; }
+.tracking-panel h1 { max-width: 410px; }
+.tracking-actions { display: grid; gap: 10px; }
+.tracking-actions .primary-button { margin-top: 0; }
+.tracking-actions .share-button { min-height: 43px; }
+.tracking-actions button:disabled { opacity: .55; cursor: not-allowed; }
+.location-result { display: grid; gap: 0; margin-top: 21px; border: 1px solid var(--line); border-radius: 12px; background: #fff; }
+.location-detail { display: grid; gap: 5px; padding: 13px 15px; }
+.location-detail + .location-detail { border-top: 1px solid var(--line); }
+.detail-label { color: var(--muted); font-size: 11px; }
+.location-detail strong { color: #26342c; font-size: 13px; font-weight: 600; overflow-wrap: anywhere; }
+.tracking-privacy { margin: 17px 0 0; color: #67736a; font-size: 11px; line-height: 1.65; }
+.tracking-map-panel { position: relative; min-height: 560px; overflow: hidden; border: 1px solid #e3e8e2; border-radius: 16px; background: #e9eee8; box-shadow: 0 12px 36px #263b2b0d; }
+#tracking-map { width: 100%; height: 100%; min-height: 560px; z-index: 1; }
+
 @media (max-width: 900px) {
   .topbar { padding: 0 5%; gap: 28px; }
   .app-shell { grid-template-columns: minmax(290px, .85fr) minmax(0, 1.15fr); gap: 25px; padding: 36px 5%; }
+  .tracking-shell { grid-template-columns: minmax(290px, .85fr) minmax(0, 1.15fr); gap: 25px; padding: 36px 5%; }
   .map-panel, #map { min-height: 510px; }
+  .tracking-map-panel, #tracking-map { min-height: 510px; }
 }
 
 @media (max-width: 680px) {
@@ -127,9 +154,12 @@ h1 { margin: 13px 0 10px; font-size: clamp(32px, 3.2vw, 43px); line-height: 1.13
   .nav-link { font-size: 11px; }
   .privacy-label { display: none; }
   .app-shell { display: flex; flex-direction: column; gap: 24px; padding: 30px 20px; }
+  .tracking-shell { display: flex; flex-direction: column; gap: 24px; padding: 30px 20px; }
   .planner { padding: 0; }
+  .tracking-panel { padding: 0; }
   h1 { font-size: 36px; }
   .map-panel, #map { min-height: 390px; }
+  .tracking-map-panel, #tracking-map { min-height: 390px; }
 }
 
 @media (prefers-reduced-motion: reduce) {

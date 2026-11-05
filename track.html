@@ -3,23 +3,61 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#f7f8f4">
     <title>Live tracking | SafeWalk</title>
+    <link rel="preconnect" href="https://unpkg.com">
+    <link rel="preconnect" href="https://tile.openstreetmap.org">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
     <link rel="stylesheet" href="css/style.css">
+    <script defer src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <script defer src="js/track.js"></script>
   </head>
   <body>
-    <header>
-      <a href="index.html">SafeWalk</a>
+    <header class="topbar">
+      <a class="brand" href="index.html" aria-label="SafeWalk home"><span class="brand-mark" aria-hidden="true">S</span>SafeWalk</a>
       <nav aria-label="Main navigation">
-        <a href="index.html">Map and routes</a>
+        <a class="nav-link" href="index.html">Plan a walk</a>
+        <a class="nav-link active" href="track.html" aria-current="page">Live tracking</a>
       </nav>
+      <span class="privacy-label"><span aria-hidden="true"></span>Location stays on this device</span>
     </header>
 
-    <main>
-      <h1>Live tracking</h1>
-      <p>Live tracking will be available when the tracking service is configured.</p>
-    </main>
+    <main class="tracking-shell">
+      <section class="tracking-panel" aria-labelledby="page-title">
+        <div class="eyebrow">YOUR LOCATION, ON YOUR TERMS</div>
+        <h1 id="page-title">Stay connected to your route.</h1>
+        <p class="intro">See your live position on the map. Tracking runs only while this page is open and stops when you choose.</p>
 
-    <script src="js/firebase.js"></script>
-    <script src="js/share.js"></script>
+        <div class="tracking-actions">
+          <button id="start-tracking" class="primary-button" type="button">Start live tracking <span aria-hidden="true">→</span></button>
+          <button id="stop-tracking" class="share-button" type="button" disabled>Stop tracking</button>
+          <button id="share-location" class="share-button" type="button" disabled>Share my current location</button>
+        </div>
+        <p id="tracking-status" class="status" role="status" aria-live="polite">Tracking is off. Start when you’re ready to share your location with this page.</p>
+
+        <section class="location-result" aria-label="Current location details">
+          <div class="location-detail">
+            <span class="detail-label">Latitude, longitude</span>
+            <strong id="coordinates">Waiting for location</strong>
+          </div>
+          <div class="location-detail">
+            <span class="detail-label">Accuracy</span>
+            <strong id="accuracy">—</strong>
+          </div>
+          <div class="location-detail">
+            <span class="detail-label">Last updated</span>
+            <strong id="last-updated">—</strong>
+          </div>
+        </section>
+
+        <p class="tracking-privacy">Your location is used to update this map in your browser. SafeWalk does not upload or save it. Sharing is optional and happens only when you press the share button; the shared map link contains your current coordinates.</p>
+        <p class="attribution">Map © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noreferrer">OpenStreetMap contributors</a>. Location tracking requires your permission and a secure connection such as localhost or HTTPS.</p>
+      </section>
+
+      <section class="tracking-map-panel" aria-label="Live location map">
+        <div id="tracking-map" role="region" aria-label="Map showing your live location"></div>
+        <div id="tracking-map-hint" class="map-hint"><span aria-hidden="true">↗</span> Start tracking to see your location</div>
+      </section>
+    </main>
   </body>
 </html>
