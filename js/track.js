@@ -8,6 +8,7 @@
   const shareTripButton = document.querySelector("#share-trip");
   const stopTripButton = document.querySelector("#stop-trip");
   const shareLocationButton = document.querySelector("#share-location");
+  const tripSteps = document.querySelector("#trip-steps");
   let trip;
 
   function setStatus(message, isError) {
@@ -38,6 +39,36 @@
       Number.isNaN(startedAt.valueOf())
         ? "Trip planned in this browser"
         : `Planned ${startedAt.toLocaleString()}`;
+    tripSteps.replaceChildren();
+    const steps = Array.isArray(trip.steps) ? trip.steps : [];
+    if (steps.length === 0) {
+      const item = document.createElement("li");
+      item.textContent = "Turn-by-turn directions are unavailable for this saved trip.";
+      tripSteps.append(item);
+    } else {
+      steps.forEach((step) => {
+        if (!step || typeof step.instruction !== "string") {
+          return;
+        }
+        const item = document.createElement("li");
+        const instruction = document.createElement("span");
+        instruction.className = "step-instruction";
+        instruction.textContent = step.instruction;
+        item.append(instruction);
+        if (typeof step.distance === "string" && step.distance) {
+          const distance = document.createElement("span");
+          distance.className = "step-distance";
+          distance.textContent = step.distance;
+          item.append(distance);
+        }
+        tripSteps.append(item);
+      });
+      if (tripSteps.childElementCount === 0) {
+        const item = document.createElement("li");
+        item.textContent = "Turn-by-turn directions are unavailable for this saved trip.";
+        tripSteps.append(item);
+      }
+    }
     tripDetails.hidden = false;
     noTrip.hidden = true;
   }

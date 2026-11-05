@@ -34,7 +34,7 @@
   }
 
   async function shareRoute(route) {
-    const text = `My SafeWalk route: ${route.origin} to ${route.destination} (${route.distance} km, about ${route.duration} min). Demo route only; check local conditions.`;
+    const text = `My SafeWalk route: ${route.origin} to ${route.destination} (${route.distance} km, about ${route.duration} min estimated at 4.8 km/h). Demo route only; check local conditions.`;
     return shareText(text);
   }
 

@@ -49,7 +49,9 @@ safewalk/
 
 ## Features
 
-- Responsive route planner with lazy-loaded Leaflet map, place search, walking route, distance, and estimated time. These route details are not a safety assessment.
+- Responsive route planner with lazy-loaded Leaflet map, up to five place matches, walking directions, and a route summary. These route details are not a safety assessment.
+- Turn-by-turn steps when the public routing service provides them, plus a walk-time estimate based on 4.8 km/h; actual time varies with pace, crossings, terrain, and stops.
+- Edit or reopen a planned route from its summary or saved trip. Search results and routes rely on public services and explain when those services are unavailable.
 - Current-location starting point and one-time location sharing request browser permission only after the user presses the related button.
 - Recent place searches and saved trip information are kept in this browser's local storage.
 - Optional trusted-contact name and phone number are stored on-device; the call link opens the device's dialer.
@@ -69,8 +71,8 @@ safewalk/
 
 ## Manual testing checklist
 
-- [ ] Desktop: plan a route between two places; confirm route line, distance, ETA, and that no safety rating is shown or implied.
-- [ ] Desktop: save the trip, open Share trip, share/copy details, and remove the saved trip.
+- [ ] Desktop: search ambiguous place names, choose each correct match, and confirm the route line, turn-by-turn steps, 4.8 km/h estimate, and no safety rating.
+- [ ] Desktop: edit a route from its summary, save it, reopen it from Share trip, share/copy details, and remove the saved trip.
 - [ ] Mobile viewport: check the bottom navigation, safe-area spacing, touch targets, and that page content is not hidden behind the navigation.
 - [ ] Location denied: deny the browser permission; confirm the page explains how to continue without location and no location is requested on page load.
 - [ ] Location allowed: press a location action; confirm a one-time link only appears in the chosen share/copy flow and no location stream starts.

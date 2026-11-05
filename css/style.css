@@ -102,6 +102,16 @@ h2 { font-size: 1.2rem; line-height: 1.3; letter-spacing: -.02em; }
 .status.error { color: var(--danger); }
 
 .card { border: 1px solid var(--line); border-radius: var(--radius-lg); background: var(--surface); box-shadow: var(--shadow-card); }
+.place-choices { margin-top: var(--space-3); }
+.place-choices h2 { margin: 0 0 var(--space-1); font-size: 1rem; }
+.place-choices > p { margin-bottom: var(--space-3); color: var(--muted); font-size: .84rem; }
+.place-choice-group { min-width: 0; margin: var(--space-3) 0 0; padding: 0; border: 0; }
+.place-choice-group legend { margin-bottom: var(--space-2); font-size: .86rem; font-weight: 700; }
+.place-choice-list { display: grid; gap: var(--space-2); }
+.place-choice { display: flex; min-height: 44px; align-items: flex-start; gap: var(--space-2); padding: var(--space-2) var(--space-3); border: 1px solid var(--line); border-radius: var(--radius-sm); background: var(--surface); cursor: pointer; }
+.place-choice.selected { border-color: var(--primary); background: var(--primary-soft); }
+.place-choice input { flex: 0 0 auto; margin-top: .3rem; accent-color: var(--primary); }
+.place-choice span { overflow-wrap: anywhere; font-size: .84rem; }
 .route-result { margin-top: var(--space-4); padding: var(--space-5); }
 .result-heading { display: flex; align-items: center; justify-content: space-between; gap: var(--space-3); }
 .result-heading h2 { margin: 0; overflow-wrap: anywhere; font-size: 1.08rem; }
@@ -109,6 +119,13 @@ h2 { font-size: 1.2rem; line-height: 1.3; letter-spacing: -.02em; }
 .metric { display: grid; gap: var(--space-1); padding: var(--space-3); border-radius: var(--radius-sm); background: var(--surface-raised); }
 .metric-label { color: var(--muted); font-size: .76rem; }
 .metric strong { font-size: 1rem; }
+.muted-copy { color: var(--muted); font-size: .84rem; line-height: 1.6; }
+.directions { margin-top: var(--space-5); }
+.directions h3 { margin: 0 0 var(--space-2); font-size: 1rem; }
+.route-steps { display: grid; gap: var(--space-2); margin: 0; padding-left: 1.6rem; }
+.route-steps li { padding: var(--space-2) var(--space-3); border-radius: var(--radius-sm); background: var(--surface-raised); }
+.step-instruction { display: block; font-size: .86rem; }
+.step-distance { display: block; margin-top: var(--space-1); color: var(--muted); font-size: .76rem; }
 .disclaimer, .demo-note { margin: var(--space-3) 0 0; color: var(--muted); font-size: .78rem; line-height: 1.5; }
 .recent-searches { margin-top: var(--space-6); }
 .section-heading { display: flex; align-items: center; justify-content: space-between; }
@@ -135,6 +152,7 @@ h2 { font-size: 1.2rem; line-height: 1.3; letter-spacing: -.02em; }
 .card-inset { padding: var(--space-5); border: 1px solid var(--line); border-radius: var(--radius-md); background: var(--surface-raised); }
 .trip-details h2 { margin: var(--space-1) 0; overflow-wrap: anywhere; }
 .trip-details .metrics-row { margin-bottom: var(--space-2); }
+.trip-details .directions { margin-bottom: var(--space-4); }
 .muted-copy, .empty-state p, .location-share p, .safety-section > p, .emergency-card p, .notice { color: var(--muted); font-size: .9rem; line-height: 1.6; }
 .button-row { display: flex; flex-wrap: wrap; gap: var(--space-2); margin-top: var(--space-3); }
 .button-row .button { flex: 1 1 10rem; }

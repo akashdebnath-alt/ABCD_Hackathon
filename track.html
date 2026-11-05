@@ -43,9 +43,15 @@
           </div>
           <div class="metrics-row">
             <div class="metric"><span class="metric-label">Distance</span><strong id="trip-distance">—</strong></div>
-            <div class="metric"><span class="metric-label">Walk estimate</span><strong id="trip-duration">—</strong></div>
+            <div class="metric"><span class="metric-label">Walk estimate (4.8 km/h)</span><strong id="trip-duration">—</strong></div>
           </div>
           <p id="trip-time" class="muted-copy"></p>
+          <p id="trip-estimate-note" class="muted-copy">Walk estimate assumes a steady 4.8 km/h; actual time varies with pace, crossings, terrain, and stops.</p>
+          <section class="directions" aria-labelledby="trip-directions-heading">
+            <h3 id="trip-directions-heading">Turn-by-turn directions</h3>
+            <ol id="trip-steps" class="route-steps"></ol>
+          </section>
+          <a id="edit-saved-route" class="button button-secondary full-button" href="index.html?editTrip=1">Edit or reopen this route</a>
           <button id="share-trip" class="button button-primary full-button" type="button">Share trip details <span aria-hidden="true">↗</span></button>
           <button id="stop-trip" class="button button-secondary full-button" type="button">Remove saved trip</button>
         </section>
@@ -84,7 +90,7 @@
         <span class="brand-mark" aria-hidden="true">S</span><p class="eyebrow">WELCOME TO SAFEWALK</p>
         <h2>A planning aid, not an emergency service.</h2>
         <p>Location is only requested after you press a location button.</p>
-        <ul class="onboarding-list"><li>No live tracking or guardian monitoring.</li><li>No automatic SOS or emergency dispatch.</li><li>Zone indicators are illustrative demo data only.</li></ul>
+        <ul class="onboarding-list"><li>No live tracking or guardian monitoring.</li><li>No automatic SOS or emergency dispatch.</li><li>No safety ratings or zone data are provided.</li></ul>
         <p class="modal-privacy">Place searches and route requests use public map services. <a id="privacy-from-onboarding" href="privacy.html">Read privacy details</a>.</p>
         <button id="dismiss-onboarding" class="button button-primary full-button" type="button">Got it</button>
       </div>
