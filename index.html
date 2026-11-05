@@ -1,32 +1,140 @@
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>SafeWalk</title>
-    <link rel="stylesheet" href="css/style.css">
-  </head>
-  <body>
-    <header>
-      <a href="index.html">SafeWalk</a>
-      <nav aria-label="Main navigation">
-        <a href="track.html">Live tracking</a>
-      </nav>
-    </header>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta content="width=device-width, initial-scale=1.0" name="viewport"><title>SafeWalk - Safe Routes</title><meta content="web_standard" name="shell-type"><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"><link href="https://fonts.googleapis.com" rel="preconnect"><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&amp;family=Plus+Jakarta+Sans:wght@600;700;800&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config={darkMode:"class",theme:{extend:{colors:{"on-primary":"#ffffff","on-secondary":"#ffffff","tertiary-fixed-dim":"#4edea3","tertiary-fixed":"#6ffbbe","primary-fixed-dim":"#c4c1fb","on-surface-variant":"#47464f","surface-bright":"#faf8ff","on-primary-fixed":"#181445","on-primary-fixed-variant":"#444173","on-secondary-fixed":"#25005a","on-secondary-fixed-variant":"#5a00c6","secondary-container":"#8a4cfc","on-error-container":"#93000a","secondary":"#712ae2","primary-fixed":"#e3dfff","on-tertiary-container":"#009d6c","on-tertiary":"#ffffff","inverse-surface":"#283044","tertiary-container":"#002819","secondary-fixed-dim":"#d2bbff","error":"#ba1a1a","surface-container":"#eaedff","surface-container-high":"#e2e7ff","surface-container-lowest":"#ffffff","on-tertiary-fixed-variant":"#005236","on-surface":"#131b2e","on-tertiary-fixed":"#002113","outline":"#787680","secondary-fixed":"#eaddff","on-secondary-container":"#fffbff","on-error":"#ffffff","surface-container-low":"#f2f3ff","background":"#faf8ff","primary-container":"#1e1b4b","tertiary":"#000f07","surface":"#faf8ff","surface-dim":"#d2d9f4","on-background":"#131b2e","outline-variant":"#c8c5d0","inverse-primary":"#c4c1fb","error-container":"#ffdad6","surface-container-highest":"#dae2fd","surface-variant":"#dae2fd","primary":"#070235","on-primary-container":"#8683ba","inverse-on-surface":"#eef0ff","surface-tint":"#5b598c"},borderRadius:{DEFAULT:"0.25rem",lg:"0.5rem",xl:"0.75rem",full:"9999px"},spacing:{"space-xl":"2rem","space-lg":"1.5rem","space-xs":"0.25rem","margin-sm":"1rem","gutter-sm":"1rem",margin:"1.5rem","gutter-lg":"2rem","space-md":"1rem","margin-lg":"3rem",gutter:"1.5rem","space-sm":"0.5rem"},fontFamily:{"headline-sm":["Plus Jakarta Sans"],"display-mobile":["Plus Jakarta Sans"],"headline-md":["Plus Jakarta Sans"],"label-sm":["Inter"],"label-md":["Inter"],"metric-display":["Plus Jakarta Sans"],"headline-lg-mobile":["Plus Jakarta Sans"],"headline-xl":["Plus Jakarta Sans"],"label-lg":["Inter"],"body-md":["Inter"],"body-lg":["Inter"],"body-sm":["Inter"],"headline-xl-mobile":["Plus Jakarta Sans"],"headline-lg":["Plus Jakarta Sans"],display:["Plus Jakarta Sans"]},fontSize:{"headline-sm":["18px",{lineHeight:"24px",letterSpacing:"0em",fontWeight:"600"}],"display-mobile":["36px",{lineHeight:"44px",letterSpacing:"-0.02em",fontWeight:"800"}],"headline-md":["22px",{lineHeight:"28px",letterSpacing:"-0.005em",fontWeight:"600"}],"label-sm":["11px",{lineHeight:"14px",letterSpacing:"0.04em",fontWeight:"600"}],"label-md":["12px",{lineHeight:"16px",letterSpacing:"0.02em",fontWeight:"600"}],"metric-display":["32px",{lineHeight:"36px",letterSpacing:"-0.02em",fontWeight:"800"}],"headline-lg-mobile":["24px",{lineHeight:"32px",letterSpacing:"-0.01em",fontWeight:"700"}],"headline-xl":["36px",{lineHeight:"44px",letterSpacing:"-0.015em",fontWeight:"700"}],"label-lg":["14px",{lineHeight:"20px",letterSpacing:"0.01em",fontWeight:"600"}],"body-md":["15px",{lineHeight:"22px",letterSpacing:"0em",fontWeight:"400"}],"body-lg":["18px",{lineHeight:"28px",letterSpacing:"-0.005em",fontWeight:"400"}],"body-sm":["13px",{lineHeight:"18px",letterSpacing:"0.005em",fontWeight:"400"}],"headline-xl-mobile":["28px",{lineHeight:"36px",letterSpacing:"-0.015em",fontWeight:"700"}],"headline-lg":["28px",{lineHeight:"36px",letterSpacing:"-0.01em",fontWeight:"700"}],display:["48px",{lineHeight:"56px",letterSpacing:"-0.02em",fontWeight:"800"}]}}}};</script></head><body class="bg-surface text-on-surface font-body-md text-body-md min-h-screen"><header class="fixed top-0 left-0 right-0 w-full z-50 bg-surface/90 backdrop-blur-xl shadow-[0_1px_8px_rgba(7,2,53,0.06)]"><div class="w-full bg-primary-container text-on-primary-container px-4 py-1.5 flex items-center justify-between text-label-sm font-label-sm"><div class="w-full px-margin-lg flex items-center justify-between mx-auto"><div class="flex items-center gap-space-sm"><span class="w-2 h-2 rounded-full bg-tertiary-fixed-dim animate-pulse"></span><span class="tracking-wide">Govt of India 112 ERSS &amp; 1091 Women Helpline Integrated • End-to-End Encrypted Telemetry</span></div><div class="hidden md:flex items-center gap-space-md"><span class="flex items-center gap-1 text-on-primary"><span class="material-symbols-outlined text-[14px]">verified_user</span> DPDP Compliant (ZK-GPS)</span><span class="text-outline-variant">|</span><span class="text-tertiary-fixed">Night Corridors: Active</span></div></div></div><div class="h-20 w-full px-margin-lg flex items-center justify-between mx-auto"><div class="flex items-center gap-space-lg"><a class="flex items-center gap-space-sm group" href="index.html"><div class="w-10 h-10 rounded-xl bg-primary flex items-center justify-center shadow-[0_4px_16px_rgba(7,2,53,0.25)]"><span class="material-symbols-outlined text-tertiary-fixed text-[24px]">shield_with_heart</span></div><div class="flex flex-col"><div class="flex items-center gap-1.5"><span class="font-headline-md text-headline-md text-primary tracking-tight">Aura Raksha</span><span class="font-label-sm text-label-sm bg-secondary-fixed text-on-secondary-fixed px-1.5 py-0.5 rounded">भारत</span></div><span class="font-label-sm text-label-sm text-on-surface-variant font-normal">Women's Safety &amp; Verified Night Corridors</span></div></a><nav class="hidden xl:flex items-center gap-space-xs p-1 bg-surface-container-low rounded-xl" data-active-classes="bg-surface-container text-primary font-semibold rounded-lg shadow-[0_1px_4px_rgba(0,0,0,0.03)]"><a aria-current="page" class="px-space-md py-space-sm transition-all bg-surface-container text-primary font-semibold rounded-lg shadow-[0_1px_4px_rgba(0,0,0,0.03)]" data-path="safe-routes" href="index.html">Safe Routes (सुरक्षित मार्ग)</a><a class="px-space-md py-space-sm font-label-lg text-label-lg text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-all rounded-lg" data-path="live-guardian" href="track.html">Live Guardian</a><a class="px-space-md py-space-sm font-label-lg text-label-lg text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-all rounded-lg" data-path="silent-sos" href="#">Silent SOS (आपातकालीन)</a><a class="px-space-md py-space-sm font-label-lg text-label-lg text-on-surface-variant hover:text-on-surface hover:bg-surface-container transition-all rounded-lg" data-path="community-heatmap" href="community.html">Community Heatmap</a></nav></div><div class="flex items-center gap-space-sm"><button class="hidden sm:flex items-center gap-1.5 px-space-md py-2.5 rounded-lg bg-surface-container text-on-surface font-label-lg text-label-lg hover:bg-surface-container-high transition-all" title="Instantly cloak screen to calculator view" type="button"><span class="material-symbols-outlined text-[18px] text-on-surface-variant">visibility_off</span><span class="">Quick Cloak</span></button><div class="hidden md:flex items-center gap-1.5 px-2.5 py-1.5 rounded-full bg-surface-container-low text-on-surface-variant text-label-sm font-label-sm"><span class="w-2 h-2 rounded-full bg-secondary"></span><span class="">Discreet Mode</span></div><button class="flex items-center gap-2 px-space-md py-2.5 rounded-lg bg-error text-on-error font-label-lg text-label-lg shadow-[0_2px_12px_rgba(186,26,26,0.3)] hover:bg-error-container hover:text-on-error-container transition-all" type="button"><span class="material-symbols-outlined text-[20px]">emergency</span><span class="tracking-wide uppercase font-bold">SOS (112 / 1091)</span></button><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div></div></div></header><main class="w-full pt-20 bg-surface"><div class="flex flex-col w-full">
+<!-- Status & Environmental Live Telemetry Strip -->
 
-    <main>
-      <h1>Plan a safer walk</h1>
-      <section aria-labelledby="map-heading">
-        <h2 id="map-heading">Map and routes</h2>
-        <div id="map" role="region" aria-label="Map">
-          The map will be available when a map provider is configured.
-        </div>
-      </section>
-    </main>
+<!-- Main Routing Stage (Bento Grid 12-Col) -->
+<div class="w-full px-margin sm:px-margin-lg py-space-md max-w-7xl mx-auto">
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-gutter-lg items-start">
+<!-- Left Rail: Route Configurator, Filters & Comparison Cards (Col 1-5) -->
+<div class="lg:col-span-5 flex flex-col gap-space-md"><div class="bg-surface-container-lowest p-space-lg rounded-2xl shadow-sm flex flex-col gap-space-md"><div class="flex items-center justify-between"><h2 class="font-headline-md text-headline-md text-primary font-bold">मार्ग चुनें (Choose Route)</h2><span class="px-3 py-1 rounded-full bg-tertiary-fixed text-on-tertiary-fixed font-label-sm text-label-sm font-semibold">Live Protected</span></div><div class="flex flex-col gap-2.5"><div class="flex items-center gap-space-sm bg-surface-container-low px-3.5 py-3 rounded-xl"><span class="w-3 h-3 rounded-full bg-secondary ring-4 ring-secondary-fixed shrink-0"></span><div class="flex flex-col flex-1 min-w-0"><span class="text-[11px] font-bold text-on-surface-variant uppercase tracking-wider">From</span><div class="font-label-lg text-label-lg text-on-surface font-semibold truncate">Rajiv Chowk Metro (Gate 3)</div></div></div><div class="flex items-center gap-space-sm bg-surface-container-low px-3.5 py-3 rounded-xl"><span class="w-3 h-3 rounded-full bg-tertiary-fixed-dim ring-4 ring-tertiary-container/20 shrink-0"></span><div class="flex flex-col flex-1 min-w-0"><span class="text-[11px] font-bold text-on-surface-variant uppercase tracking-wider">To</span><div class="font-label-lg text-label-lg text-on-surface font-semibold truncate">Hauz Khas Enclave</div></div></div></div><div class="grid grid-cols-3 gap-2 p-1.5 bg-surface-container-low rounded-xl" id="transit-mode-selector"><button class="transit-btn py-2.5 px-2 flex items-center justify-center gap-1.5 rounded-lg bg-surface-container-lowest text-primary shadow-sm font-label-md text-label-md font-bold transition-all" type="button"><span class="material-symbols-outlined text-[18px]">directions_walk</span><span class="">Walking</span></button><button class="transit-btn py-2.5 px-2 flex items-center justify-center gap-1.5 rounded-lg text-on-surface-variant hover:text-on-surface font-label-md text-label-md font-semibold transition-all" type="button"><span class="material-symbols-outlined text-[18px]">local_taxi</span><span class="">Auto/Cab</span></button><button class="transit-btn py-2.5 px-2 flex items-center justify-center gap-1.5 rounded-lg text-on-surface-variant hover:text-on-surface font-label-md text-label-md font-semibold transition-all" type="button"><span class="material-symbols-outlined text-[18px]">subway</span><span class="">Metro</span></button></div></div><div class="bg-surface-container-lowest p-space-lg rounded-2xl shadow-md ring-2 ring-tertiary-fixed-dim flex flex-col gap-space-md"><div class="flex items-center justify-between"><span class="px-3 py-1 rounded-full bg-tertiary-fixed text-on-tertiary-fixed font-label-sm text-label-sm font-bold flex items-center gap-1"><span class="material-symbols-outlined text-[16px]">verified</span> Safest Route (सबसे सुरक्षित)</span><span class="font-metric-display text-metric-display text-on-tertiary-container font-extrabold">98%</span></div><div><h3 class="font-headline-lg text-headline-lg text-primary font-bold">Via Ring Road &amp; Metro Pillar</h3><p class="font-body-md text-body-md text-on-surface-variant mt-1">19 min • 98% Safe • Fully Lit &amp; Verified</p></div><div class="flex items-center gap-space-md py-2.5 px-3.5 bg-surface-container-low rounded-xl text-body-sm font-body-sm text-on-surface"><div class="flex items-center gap-2"><span class="material-symbols-outlined text-tertiary-fixed-dim text-[20px]">light_mode</span><span class="">100% Well Lit</span></div><div class="flex items-center gap-2"><span class="material-symbols-outlined text-secondary text-[20px]">local_police</span><span class="">3 Pink Booths</span></div></div><button class="w-full py-4 px-space-md rounded-xl bg-primary text-on-primary font-headline-sm text-headline-sm font-bold flex items-center justify-center gap-2 shadow-md hover:bg-primary-container transition-all active:scale-[0.99]" id="start-guardian-btn" type="button"><span class="material-symbols-outlined text-tertiary-fixed text-[24px]">shield_with_heart</span><span class="">Start Safe Walk (मार्ग शुरू करें)</span></button></div><div class="bg-surface-container-lowest p-space-md rounded-2xl shadow-sm border border-outline-variant flex items-center justify-between gap-space-sm"><div class="flex flex-col"><div><span class="font-label-sm text-label-sm text-on-surface-variant font-bold uppercase tracking-wider">Quickest Route (तेज़ मार्ग)</span><h4 class="font-headline-sm text-headline-sm text-on-surface font-semibold">Via Subzi Mandi Shortcut</h4></div><p class="font-body-sm text-body-sm text-error mt-0.5">13 min • 58% Safe • Dark spots noted</p></div><div class="px-3 py-1.5 rounded-lg bg-error-container text-on-error-container font-headline-sm text-headline-sm font-bold shrink-0">58%</div></div></div>
+<!-- Right Stage: Live Interactive Interactive Map & Havens (Col 6-12) -->
+<div class="lg:col-span-7 flex flex-col gap-space-md">
+<!-- Interactive Safe Corridor Visual Map Container -->
+<div class="relative w-full rounded-2xl overflow-hidden shadow-xl bg-surface-container-high min-h-[480px] lg:h-[540px] flex flex-col justify-between">
+<!-- Static Map Geo Layer via App Shell pipeline -->
+<div class="absolute inset-0 w-full h-full bg-cover bg-center" data-location="Connaught Place to Hauz Khas Delhi India" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBuxGOQJ-3wUt1aMPkOaO8NJEPLkE9R1EZ5uZaSjbj2iyI-KVLU9wDV6zlbu8G2BrIT2hPD_Qlp5xXa6roFCatcMWDDxLPnTDm-RtV6K-MYR7NfMCsVMHCre23IkAL41WUqGTf53pVFIYQfXFXme5oItZaEnO6ABJwlaqoAsvNWsIfcY8rLKJ4Cd9T27b9g12N1rQDFP5y0GxFE_TaOydh1gfujwslxD2ACcu9aERU')"></div>
+<!-- Digital Overlay: SVG Corridor Graph & Telemetry Nodes -->
+<div class="absolute inset-0 bg-primary/20 backdrop-brightness-95 pointer-events-none"></div>
+<svg class="absolute inset-0 w-full h-full pointer-events-none" fill="none" viewBox="0 0 700 540" xmlns="http://www.w3.org/2000/svg">
+<!-- Safe Green Corridor Halo -->
+<path d="M 120 440 C 200 410, 260 320, 360 260 C 450 200, 520 180, 580 90" stroke="#4edea3" stroke-linecap="round" stroke-opacity="0.35" stroke-width="16"></path>
+<path d="M 120 440 C 200 410, 260 320, 360 260 C 450 200, 520 180, 580 90" stroke="#009d6c" stroke-dasharray="6 6" stroke-linecap="round" stroke-width="4"></path>
+<!-- Hazardous Red Shortcut Pathway -->
+<path d="M 120 440 C 240 460, 300 370, 390 350 C 460 340, 510 220, 580 90" stroke="#ba1a1a" stroke-dasharray="4 8" stroke-linecap="round" stroke-opacity="0.75" stroke-width="6"></path>
+<!-- Red Underpass Hazard Zone Radius -->
+<circle cx="340" cy="380" fill="#ffdad6" fill-opacity="0.45" r="32"></circle>
+<circle cx="340" cy="380" fill="#ba1a1a" fill-opacity="0.7" r="16"></circle>
+<!-- Metro Pillar Line Highlight (Green Safe Waypoints) -->
+<circle cx="210" cy="365" fill="#6ffbbe" r="7" stroke="#070235" stroke-width="2"></circle>
+<circle cx="360" cy="260" fill="#6ffbbe" r="7" stroke="#070235" stroke-width="2"></circle>
+<circle cx="470" cy="180" fill="#6ffbbe" r="7" stroke="#070235" stroke-width="2"></circle>
+</svg>
+<!-- Top Map Floater HUD -->
+<div class="relative z-10 p-space-md flex items-center justify-between pointer-events-auto"><div class="flex items-center gap-2 bg-surface-container-lowest/95 backdrop-blur-md px-3.5 py-2 rounded-xl shadow-md"><span class="w-2.5 h-2.5 rounded-full bg-tertiary-fixed-dim animate-pulse"></span><span class="font-label-md text-label-md text-primary font-bold">Live Safe Corridor Telemetry</span></div><div class="bg-surface-container-lowest/95 backdrop-blur-md px-3 py-1.5 rounded-xl shadow-md font-label-sm text-label-sm text-secondary font-bold flex items-center gap-1.5"><span class="material-symbols-outlined text-[16px]">shield</span> 24/7 Monitored</div></div>
+<!-- Floating Map Markers & Callouts -->
+<div class="relative z-10 px-space-md pb-space-md flex flex-col gap-2 pointer-events-auto">
+<div class="flex flex-wrap items-end justify-between gap-space-sm">
+<!-- Hazard Alert Tooltip on Map -->
+<div class="bg-surface-container-lowest/95 backdrop-blur-md p-2.5 rounded-xl shadow-lg max-w-xs flex items-center gap-2.5">
+<div class="w-8 h-8 rounded-lg bg-error-container text-on-error-container flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-[18px]">no_flash</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm font-bold text-on-surface">Mandi Underpass Dark Spot</span>
+<span class="text-[11px] text-on-surface-variant">4 Streetlights offline • Patrol alerted</span>
+</div>
+</div>
+<!-- Safe Corridor Active Floating Card -->
+<div class="bg-primary-container text-on-primary p-3 rounded-xl shadow-xl flex items-center gap-3">
+<div class="w-9 h-9 rounded-lg bg-tertiary-fixed text-on-tertiary-fixed flex items-center justify-center font-bold">
+<span class="material-symbols-outlined text-[20px]">shield_person</span>
+</div>
+<div class="flex flex-col">
+<div class="flex items-center gap-1.5">
+<span class="font-label-sm text-label-sm text-tertiary-fixed uppercase font-bold">98% Protected Corridor</span>
+<span class="w-1.5 h-1.5 rounded-full bg-tertiary-fixed"></span>
+</div>
+<span class="font-headline-sm text-headline-sm text-on-primary">Pillar 180 to 220 Active Guard</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Verified Indian Safe Havens Along The Active Route -->
+<div class="flex flex-col gap-space-sm"><div class="flex items-center justify-between"><div class="flex items-center gap-2"><span class="material-symbols-outlined text-secondary text-[20px]">verified</span><h3 class="font-headline-sm text-headline-sm text-primary font-bold">Safe Havens (सुरक्षित विश्राम केंद्र)</h3></div><span class="font-label-sm text-label-sm text-on-surface-variant font-medium">Instant Walk-In Assistance</span></div><div class="grid grid-cols-1 md:grid-cols-3 gap-3"><div class="bg-surface-container-lowest p-3.5 rounded-xl shadow-sm flex items-center gap-3 hover:shadow-md transition-all"><div class="w-10 h-10 rounded-xl bg-tertiary-fixed/20 text-on-tertiary-container flex items-center justify-center shrink-0"><span class="material-symbols-outlined text-[22px]">local_pharmacy</span></div><div class="flex flex-col min-w-0"><span class="font-label-lg text-label-lg font-bold text-on-surface truncate">Apollo 24/7 Chemist</span><span class="text-body-sm font-body-sm text-tertiary-fixed-variant font-semibold">0.2 km • 24x7 Open</span></div></div><div class="bg-surface-container-lowest p-3.5 rounded-xl shadow-sm flex items-center gap-3 hover:shadow-md transition-all"><div class="w-10 h-10 rounded-xl bg-secondary-fixed text-on-secondary-fixed flex items-center justify-center shrink-0"><span class="material-symbols-outlined text-[22px]">local_police</span></div><div class="flex flex-col min-w-0"><span class="font-label-lg text-label-lg font-bold text-on-surface truncate">Pink Police Booth</span><span class="text-body-sm font-body-sm text-secondary font-semibold">0.4 km • Guarded</span></div></div><div class="bg-surface-container-lowest p-3.5 rounded-xl shadow-sm flex items-center gap-3 hover:shadow-md transition-all"><div class="w-10 h-10 rounded-xl bg-primary-fixed text-on-primary-fixed flex items-center justify-center shrink-0"><span class="material-symbols-outlined text-[22px]">security</span></div><div class="flex flex-col min-w-0"><span class="font-label-lg text-label-lg font-bold text-on-surface truncate">Metro Security Desk</span><span class="text-body-sm font-body-sm text-on-surface-variant font-semibold">0.7 km • CISF Active</span></div></div></div></div>
+</div>
+</div>
+</div>
+<!-- Turn-by-Turn Safe Transit Steps & Real-Time Sentinels -->
+<section class="w-full px-margin sm:px-margin-lg py-space-lg max-w-7xl mx-auto"><div class="bg-surface-container-lowest rounded-2xl p-space-lg shadow-sm"><div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-space-md"><div><span class="font-label-sm text-label-sm text-secondary uppercase font-bold tracking-wider">Safe Step Guidance</span><h3 class="font-headline-lg text-headline-lg text-primary font-bold">मार्गदर्शन के 3 सरल चरण (3 Clear Steps)</h3></div><div class="flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-full bg-tertiary-fixed-dim"></span><span class="font-label-md text-label-md text-on-surface-variant font-semibold">All Paths 100% Lit</span></div></div><div class="grid grid-cols-1 md:grid-cols-3 gap-gutter"><div class="flex flex-col gap-2 p-space-md rounded-2xl bg-surface-container-low"><div class="flex items-center justify-between mb-1"><span class="px-2.5 py-0.5 rounded-full bg-primary text-on-primary font-label-sm text-label-sm font-bold">चरण 01</span><span class="font-label-sm text-label-sm text-on-surface-variant font-semibold">0 - 400m</span></div><h4 class="font-headline-sm text-headline-sm text-primary font-bold">Rajiv Chowk Gate 3 → Metro Plaza</h4><p class="font-body-md text-body-md text-on-surface-variant">Direct well-lit pedestrian walkway with active police booth.</p><div class="mt-auto pt-2 flex items-center gap-1.5 font-label-md text-label-md text-tertiary-fixed-variant font-semibold"><span class="material-symbols-outlined text-[18px]">verified</span><span class="">Safe &amp; Populated</span></div></div><div class="flex flex-col gap-2 p-space-md rounded-2xl bg-surface-container-low"><div class="flex items-center justify-between mb-1"><span class="px-2.5 py-0.5 rounded-full bg-primary text-on-primary font-label-sm text-label-sm font-bold">चरण 02</span><span class="font-label-sm text-label-sm text-on-surface-variant font-semibold">400 - 1,200m</span></div><h4 class="font-headline-sm text-headline-sm text-primary font-bold">Janpath Avenue → Metro Pillar #210</h4><p class="font-body-md text-body-md text-on-surface-variant">Walk under continuous high-mast LED lights alongside open shops.</p><div class="mt-auto pt-2 flex items-center gap-1.5 font-label-md text-label-md text-secondary font-semibold"><span class="material-symbols-outlined text-[18px]">light_mode</span><span class="">Continuous Streetlights</span></div></div><div class="flex flex-col gap-2 p-space-md rounded-2xl bg-surface-container-low"><div class="flex items-center justify-between mb-1"><span class="px-2.5 py-0.5 rounded-full bg-primary text-on-primary font-label-sm text-label-sm font-bold">चरण 03</span><span class="font-label-sm text-label-sm text-on-surface-variant font-semibold">1,200 - 1,600m</span></div><h4 class="font-headline-sm text-headline-sm text-primary font-bold">Hauz Khas Enclave Main Gate</h4><p class="font-body-md text-body-md text-on-surface-variant">Enter gated residential perimeter with 24/7 security guard.</p><div class="mt-auto pt-2 flex items-center gap-1.5 font-label-md text-label-md text-primary font-semibold"><span class="material-symbols-outlined text-[18px]">check_circle</span><span class="">Guarded Destination</span></div></div></div></div></section>
+<!-- Community Guardian Sync Drawer (Simulation State) -->
+<section class="w-full px-margin sm:px-margin-lg pb-space-lg max-w-7xl mx-auto">
+<div class="bg-gradient-to-r from-primary-container to-primary p-space-md sm:p-space-lg rounded-2xl text-on-primary flex flex-col md:flex-row items-center justify-between gap-space-md">
+<div class="flex items-center gap-space-md">
+<div class="w-12 h-12 rounded-xl bg-secondary flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-on-secondary text-[26px]">connect_without_contact</span>
+</div>
+<div class="flex flex-col">
+<div class="flex items-center gap-2">
+<span class="font-headline-sm text-headline-sm">Aura Guardian Pairing Active</span>
+<span class="bg-tertiary-fixed text-on-tertiary-fixed font-label-sm text-label-sm px-2 py-0.5 rounded font-bold">2 Contacts Synced</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-primary-container mt-0.5">
+            Maa (Delhi) &amp; Sister (Bangalore) will automatically receive real-time silent telemetry if your speed drops or you deviate from the Metro Pillar #210 corridor.
+          </p>
+</div>
+</div>
+<div class="flex items-center gap-3 shrink-0 w-full sm:w-auto">
+<button class="flex-1 sm:flex-none px-4 py-2.5 rounded-lg bg-surface-container-lowest text-primary font-label-md text-label-md font-bold hover:bg-surface-container transition-all" type="button">
+          Manage Guardians (2)
+        </button>
+<button class="flex-1 sm:flex-none px-4 py-2.5 rounded-lg bg-secondary text-on-secondary font-label-md text-label-md font-bold hover:bg-secondary/90 transition-all flex items-center justify-center gap-1.5" type="button">
+<span class="material-symbols-outlined text-[16px]">share_location</span>
+<span class="">Share Live Link</span>
+</button>
+</div>
+</div>
+</section>
+<!-- Client-side Interactive Behaviors -->
+<script>
+    // Transit selector tab state toggle
+    const transitButtons = document.querySelectorAll('.transit-btn');
+    transitButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        transitButtons.forEach(b => {
+          b.classList.remove('bg-surface-container-lowest', 'text-primary', 'shadow-sm', 'font-semibold');
+          b.classList.add('text-on-surface-variant');
+        });
+        btn.classList.add('bg-surface-container-lowest', 'text-primary', 'shadow-sm', 'font-semibold');
+        btn.classList.remove('text-on-surface-variant');
+      });
+    });
 
-    <script src="js/firebase.js"></script>
-    <script src="js/score.js"></script>
-    <script src="js/map.js"></script>
-    <script src="js/share.js"></script>
-  </body>
-</html>
+    // Start Guardian Walk micro-interaction
+    const startGuardianBtn = document.getElementById('start-guardian-btn');
+    if (startGuardianBtn) {
+      startGuardianBtn.addEventListener('click', () => {
+        const originalText = startGuardianBtn.innerHTML;
+        startGuardianBtn.innerHTML = `
+          <span class="w-4 h-4 rounded-full border-2 border-tertiary-fixed border-t-transparent animate-spin"></span>
+          <span>Arming Safe Corridors & GPS Beacon...</span>
+        `;
+        setTimeout(() => {
+          startGuardianBtn.innerHTML = `
+            <span class="material-symbols-outlined text-tertiary-fixed text-[20px]">check_circle</span>
+            <span>Live Sentinel Active • 112 Ready</span>
+          `;
+          startGuardianBtn.classList.remove('bg-primary-container');
+          startGuardianBtn.classList.add('bg-tertiary-container');
+        }, 1200);
+      });
+    }
+  </script>
+</div></main><footer class="w-full bg-surface-container-low mt-space-xl shadow-[0_-1px_12px_rgba(7,2,53,0.03)]"><div class="w-full px-margin-lg py-space-xl mx-auto"><div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-gutter-lg pb-space-lg"><div class="flex flex-col gap-space-sm"><div class="flex items-center gap-space-xs"><div class="w-8 h-8 rounded-lg bg-primary flex items-center justify-center"><span class="material-symbols-outlined text-tertiary-fixed text-[18px]">shield_with_heart</span></div><span class="font-headline-sm text-headline-sm text-primary">Aura Raksha</span></div><p class="font-body-sm text-body-sm text-on-surface-variant">Civilian women safety &amp; verified transit network integrating ERSS 112, state police pink squads, and live guardian beacons.</p><div class="flex items-center gap-2 text-label-sm font-label-sm text-tertiary-container bg-tertiary-fixed-dim/20 px-3 py-1.5 rounded-full w-fit"><span class="material-symbols-outlined text-[16px]">lock</span><span class="">DPDP Act 2023 Compliant</span></div></div><div class="flex flex-col gap-space-sm"><span class="font-label-lg text-label-lg text-primary uppercase tracking-wider">Emergency Directory (24x7)</span><ul class="flex flex-col gap-2 font-body-sm text-body-sm text-on-surface-variant"><li class="flex items-center justify-between"><span class="font-semibold text-error">National Emergency</span><span class="font-bold text-on-surface">112</span></li><li class="flex items-center justify-between"><span class="font-semibold text-secondary">Women Helpline</span><span class="font-bold text-on-surface">1091</span></li><li class="flex items-center justify-between"><span class="">NCW Domestic Violence</span><span class="font-bold text-on-surface">7827170170</span></li><li class="flex items-center justify-between"><span class="">Railway / Metro Women Safety</span><span class="font-bold text-on-surface">182 / 139</span></li></ul></div><div class="flex flex-col gap-space-sm"><span class="font-label-lg text-label-lg text-primary uppercase tracking-wider">Civic Protection Infra</span><ul class="flex flex-col gap-2 font-body-sm text-body-sm text-on-surface-variant"><li class="">Pink Police Booths (दिल्ली / State Squads)</li><li class="">Metro Transit Safety Marshals</li><li class="">Verified Safe-Haven Shopkeepers (अभय केंद्र)</li><li class="">Streetlight Telemetry &amp; CCTV Corridors</li></ul></div><div class="flex flex-col gap-space-sm"><span class="font-label-lg text-label-lg text-primary uppercase tracking-wider">Privacy &amp; Encryption</span><p class="font-body-sm text-body-sm text-on-surface-variant">Zero-Knowledge GPS hash verification ensures neither telemetry data nor identity records are persistently cached. Instant data purge enabled via Cloak trigger.</p><div class="flex items-center gap-2 font-label-sm text-label-sm text-on-surface-variant"><span class="material-symbols-outlined text-[16px] text-tertiary-container">verified</span><span class="">Encrypted by CDAC / NIC standards</span></div></div></div><div class="pt-space-md flex flex-col sm:flex-row items-center justify-between gap-space-sm font-label-sm text-label-sm text-on-surface-variant"><p class="">© 2025 Aura Raksha (औरारक्षा) • Dedicated to Women's Civic Safety and Rapid Assistance across India.</p><div class="flex items-center gap-space-md"><a class="hover:text-on-surface transition-colors" href="#">Emergency Protocols</a><a class="hover:text-on-surface transition-colors" href="#">Citizen Charter</a><a class="hover:text-on-surface transition-colors" href="#">Data Privacy (DPDP)</a></div></div></div></footer>
+
+
+<script src="js/firebase.js"></script>
+<script src="js/score.js"></script>
+<script src="js/map.js"></script>
+<script src="js/share.js"></script>
+</body></html>
