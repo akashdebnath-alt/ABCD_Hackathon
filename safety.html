@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
     <meta name="theme-color" content="#f5f4fb">
-    <meta name="description" content="Safety tools with clear boundaries: user-triggered sharing, a visual-only fake-call demo, and emergency dial links.">
+    <meta name="description" content="A practical walking safety checklist, user-triggered sharing, emergency dial links, and clearly labeled safety tools.">
     <meta property="og:title" content="Safety tools | SafeWalk">
     <meta property="og:description" content="Optional safety tools. No automatic alerts or live tracking.">
     <meta property="og:type" content="website">
@@ -35,6 +35,49 @@
         <div class="eyebrow">TOOLS TO HELP YOU PREPARE</div>
         <h1 id="page-title">Safety tools.</h1>
         <p class="intro">If you are in immediate danger in India, move to a safer public place if possible and contact emergency services.</p>
+
+        <section class="safety-section checklist-section" aria-labelledby="checklist-heading">
+          <div class="checklist-header">
+            <div>
+              <h2 id="checklist-heading">Walking safety checklist</h2>
+              <p>Use the steps that fit your plans. Progress is saved on this device.</p>
+            </div>
+            <button id="reset-safety-checklist" class="button button-secondary compact-button" type="button">Reset</button>
+          </div>
+          <progress id="safety-checklist-progress" class="checklist-progress" max="14" value="0" aria-label="Safety checklist progress"></progress>
+          <p id="safety-checklist-status" class="field-help" role="status" aria-live="polite">0 of 14 items checked. This checklist is general guidance, not a guarantee of safety.</p>
+
+          <fieldset class="checklist-group">
+            <legend>Before you leave</legend>
+            <label class="checklist-item"><input type="checkbox" data-safety-check="route"><span>Review your route and travel time; check local conditions, weather, daylight, and service availability.</span></label>
+            <label class="checklist-item"><input type="checkbox" data-safety-check="phone"><span>Charge your phone, keep it accessible, and make sure you can contact someone if needed.</span></label>
+            <label class="checklist-item"><input type="checkbox" data-safety-check="contact"><span>Tell someone you trust where you are going and when you expect to arrive; agree on a check-in if useful.</span></label>
+            <label class="checklist-item"><input type="checkbox" data-safety-check="essentials"><span>Carry essentials for your needs, such as identification, fare, water, or medication.</span></label>
+          </fieldset>
+
+          <fieldset class="checklist-group">
+            <legend>While travelling</legend>
+            <label class="checklist-item"><input type="checkbox" data-safety-check="route-choice"><span>Choose well-lit, populated routes when practical, and change plans if conditions feel uncomfortable.</span></label>
+            <label class="checklist-item"><input type="checkbox" data-safety-check="awareness"><span>Stay aware of your surroundings; keep headphone volume low and pause phone use when crossing roads.</span></label>
+            <label class="checklist-item"><input type="checkbox" data-safety-check="traffic"><span>Use pedestrian crossings where available and follow local traffic signals.</span></label>
+            <label class="checklist-item"><input type="checkbox" data-safety-check="sharing"><span>Share your plans or location only with people you trust; avoid posting live location publicly.</span></label>
+            <label class="checklist-item"><input type="checkbox" data-safety-check="transport"><span>For public or hired transport, check the service and vehicle details using official or trusted sources.</span></label>
+          </fieldset>
+
+          <fieldset class="checklist-group">
+            <legend>If you feel unsafe or need urgent help</legend>
+            <label class="checklist-item"><input type="checkbox" data-safety-check="public-place"><span>Move toward a well-lit public or staffed place and ask staff or security for help if available.</span></label>
+            <label class="checklist-item"><input type="checkbox" data-safety-check="trusted-help"><span>Contact someone you trust and tell them your location and what help you need.</span></label>
+            <label class="checklist-item"><input type="checkbox" data-safety-check="emergency"><span>If there is immediate danger, contact local emergency services. In India, call 112.</span></label>
+          </fieldset>
+
+          <fieldset class="checklist-group">
+            <legend>When you arrive</legend>
+            <label class="checklist-item"><input type="checkbox" data-safety-check="arrival"><span>Let your trusted contact know you arrived, especially if you had agreed on a check-in.</span></label>
+            <label class="checklist-item"><input type="checkbox" data-safety-check="sharing-end"><span>Review any location or trip details you shared and stop sharing or remove them when no longer needed.</span></label>
+          </fieldset>
+          <p class="disclaimer">This general checklist cannot cover every situation. Trust your judgment and follow local emergency guidance. SafeWalk does not monitor trips or send alerts automatically.</p>
+        </section>
 
         <section class="emergency-card" aria-labelledby="emergency-heading">
           <div>

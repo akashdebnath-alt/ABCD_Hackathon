@@ -9,6 +9,10 @@
   const coverOverlay = document.querySelector("#cover-overlay");
   const callerNameInput = document.querySelector("#caller-name");
   const contactForm = document.querySelector("#contact-form");
+  const checklistInputs = [...document.querySelectorAll("[data-safety-check]")];
+  const checklistProgress = document.querySelector("#safety-checklist-progress");
+  const checklistStatus = document.querySelector("#safety-checklist-status");
+  const resetChecklistButton = document.querySelector("#reset-safety-checklist");
   let selectedPersona = "Trusted contact";
 
   function setStatus(message, isError) {
@@ -67,6 +71,42 @@
       document.querySelector("#contact-phone").value = "";
       renderContact();
       setStatus("Saved trusted contact removed from this browser.");
+    }
+  }
+
+  function getCheckedChecklistItems() {
+    const saved = utils.getItem(utils.keys.safetyChecklist, []);
+    const validIds = new Set(checklistInputs.map((input) => input.dataset.safetyCheck));
+    return Array.isArray(saved)
+      ? saved.filter((id) => typeof id === "string" && validIds.has(id))
+      : [];
+  }
+
+  function updateChecklistStatus(saved) {
+    const checkedCount = checklistInputs.filter((input) => input.checked).length;
+    checklistProgress.value = checkedCount;
+    checklistStatus.textContent = saved
+      ? `${checkedCount} of ${checklistInputs.length} items checked. Progress is saved on this device.`
+      : `${checkedCount} of ${checklistInputs.length} items checked. Changes couldn't be saved; they will be lost when this page closes.`;
+  }
+
+  function saveChecklist() {
+    const checkedIds = checklistInputs
+      .filter((input) => input.checked)
+      .map((input) => input.dataset.safetyCheck);
+    updateChecklistStatus(utils.setItem(utils.keys.safetyChecklist, checkedIds));
+  }
+
+  function resetChecklist() {
+    checklistInputs.forEach((input) => {
+      input.checked = false;
+    });
+
+    if (utils.removeItem(utils.keys.safetyChecklist)) {
+      updateChecklistStatus(true);
+      setStatus("Safety checklist progress reset.");
+    } else {
+      updateChecklistStatus(false);
     }
   }
 
@@ -143,6 +183,14 @@
 
   contactForm.addEventListener("submit", saveContact);
   document.querySelector("#remove-contact").addEventListener("click", removeContact);
+  const savedChecklistItems = new Set(getCheckedChecklistItems());
+  checklistInputs.forEach((input) => {
+    input.addEventListener("change", saveChecklist);
+    input.checked = savedChecklistItems.has(input.dataset.safetyCheck);
+  });
+  checklistProgress.max = checklistInputs.length;
+  updateChecklistStatus(true);
+  resetChecklistButton.addEventListener("click", resetChecklist);
   shareAlertButton.addEventListener("click", shareAlertWithLocation);
   document.querySelector("#fake-call").addEventListener("click", showFakeCall);
   document.querySelector("#close-fake-call").addEventListener("click", hideFakeCall);

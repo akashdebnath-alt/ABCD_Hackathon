@@ -55,6 +55,7 @@ safewalk/
 - Current-location starting point and one-time location sharing request browser permission only after the user presses the related button.
 - Recent place searches and saved trip information are kept in this browser's local storage.
 - Optional trusted-contact name and phone number are stored on-device; the call link opens the device's dialer.
+- Interactive before, during, urgent-help, and arrival checklist. Checked items stay in this browser and can be reset or cleared from the privacy page.
 - Sharing uses the browser share sheet or a user-controlled copy/prompt fallback. The user chooses a recipient and sends the message.
 - A visual-only fake-call screen and quick screen cover; neither makes a call or sends an alert.
 - First-visit explanation, privacy page and clear-data action, responsive desktop/mobile navigation, keyboard focus styling, reduced-motion support, and system dark mode.
@@ -64,6 +65,7 @@ safewalk/
 
 - There is no live tracking, background location, guardian account, automatic SOS, or emergency dispatch. The 112/1091/181 links open the device's phone app.
 - The app does not rate route safety. Route and travel-time estimates are not verified safety information; check local conditions and trusted official sources before your walk.
+- The safety checklist is general preparation guidance, not exhaustive advice, emergency monitoring, or a guarantee of safety.
 - Place names are sent to Photon for geocoding when a route is requested; route coordinates are sent to the public FOSSGIS walking-routing service. Map tiles come from OpenStreetMap. These services may receive network metadata such as an IP address under their own policies.
 - SafeWalk itself has no server. Saved trip, recent-place, contact, and onboarding values remain in browser local storage until removed or cleared. Browser storage is not encrypted by this app.
 - Clearing SafeWalk data removes those app-owned local-storage entries from this browser. It does not erase browser history, shared messages, service-worker cache, or information held by external services.
@@ -79,5 +81,6 @@ safewalk/
 - [ ] Offline: load once, disconnect the network, navigate to cached pages, and confirm the offline banner/fallback explains which features need a connection.
 - [ ] Keyboard only: use Tab/Shift+Tab, Enter/Space, Escape, skip link, onboarding dialog, fake-call demo, and quick screen cover; confirm visible focus and focus remains in dialogs.
 - [ ] Privacy: save a trusted contact and trip, clear SafeWalk data, reload, and confirm SafeWalk-owned entries are gone.
+- [ ] Safety checklist: check items, reload to confirm progress is saved on this device, reset it, and verify privacy data clearing also removes checklist progress.
 - [ ] Dark mode and reduced motion: enable each operating-system preference and check contrast, focus indicators, and animations.
 - [ ] Emergency links: verify the link target only (`tel:112`, `tel:1091`, `tel:181`); do not place a test emergency call.

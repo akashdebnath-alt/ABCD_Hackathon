@@ -5,6 +5,7 @@
     activeTrip: "safewalk.activeTrip",
     recentSearches: "safewalk.recentSearches",
     trustedContact: "safewalk.trustedContact",
+    safetyChecklist: "safewalk.safetyChecklist",
     onboardingSeen: "safewalk.onboardingSeen",
   };
   let toastTimer;
