@@ -3,30 +3,70 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>SafeWalk</title>
+    <meta name="theme-color" content="#f7f8f4">
+    <title>SafeWalk — Plan your walk</title>
+    <link rel="preconnect" href="https://unpkg.com">
+    <link rel="preconnect" href="https://tile.openstreetmap.org">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
     <link rel="stylesheet" href="css/style.css">
+    <script defer src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <script defer src="js/score.js"></script>
+    <script defer src="js/share.js"></script>
+    <script defer src="js/map.js"></script>
   </head>
   <body>
-    <header>
-      <a href="index.html">SafeWalk</a>
+    <header class="topbar">
+      <a class="brand" href="index.html" aria-label="SafeWalk home"><span class="brand-mark" aria-hidden="true">S</span>SafeWalk</a>
       <nav aria-label="Main navigation">
-        <a href="track.html">Live tracking</a>
+        <a class="nav-link active" href="index.html">Plan a walk</a>
+        <a class="nav-link" href="track.html">Live tracking</a>
       </nav>
+      <span class="privacy-label"><span aria-hidden="true"></span>Location used only when requested</span>
     </header>
 
-    <main>
-      <h1>Plan a safer walk</h1>
-      <section aria-labelledby="map-heading">
-        <h2 id="map-heading">Map and routes</h2>
-        <div id="map" role="region" aria-label="Map">
-          The map will be available when a map provider is configured.
-        </div>
+    <main class="app-shell">
+      <section class="planner" aria-labelledby="page-title">
+        <div class="eyebrow">WALK WITH MORE PEACE OF MIND</div>
+        <h1 id="page-title">Find your way,<br>feel more prepared.</h1>
+        <p class="intro">Plan a route and share your trip with someone you trust.</p>
+
+        <form id="route-form" class="route-form">
+          <label for="origin">Starting point</label>
+          <div class="input-wrap origin-wrap">
+            <span class="field-dot origin-dot" aria-hidden="true"></span>
+            <input id="origin" name="origin" type="text" placeholder="Enter a starting place" autocomplete="street-address" required>
+          </div>
+          <button id="use-location" class="location-button" type="button">◎ <span>Use my current location</span></button>
+
+          <div class="route-connector" aria-hidden="true"></div>
+          <label for="destination">Destination</label>
+          <div class="input-wrap">
+            <span class="field-dot destination-dot" aria-hidden="true"></span>
+            <input id="destination" name="destination" type="text" placeholder="Where are you going?" autocomplete="street-address" required>
+          </div>
+          <button id="plan-route" class="primary-button" type="submit">Show my route <span aria-hidden="true">→</span></button>
+        </form>
+
+        <p id="status" class="status" role="status" aria-live="polite">Enter two places to get started.</p>
+
+        <section id="route-result" class="route-result" aria-live="polite" hidden>
+          <div class="result-heading">
+            <div><span class="eyebrow">YOUR ROUTE</span><h2 id="route-summary">Route details</h2></div>
+            <button id="share-route" class="share-button" type="button">Share</button>
+          </div>
+          <p id="route-meta" class="route-meta"></p>
+          <div id="safety-result" class="safety-result"></div>
+          <p class="demo-note">Illustrative demo indicator only—not verified safety data. Use your judgment and local guidance.</p>
+        </section>
+
+        <div class="map-key"><span class="zone-key" aria-hidden="true"></span>Illustrative demo zones <span class="key-caption">(Delhi sample only)</span></div>
+        <p class="attribution">Map © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noreferrer">OpenStreetMap contributors</a>. Search and routing use public demo services. Places and route coordinates are sent to those providers when you plan a route.</p>
+      </section>
+
+      <section class="map-panel" aria-label="Route map">
+        <div id="map" role="region" aria-label="Interactive map"></div>
+        <div class="map-hint"><span aria-hidden="true">↗</span> Your route will appear here</div>
       </section>
     </main>
-
-    <script src="js/firebase.js"></script>
-    <script src="js/score.js"></script>
-    <script src="js/map.js"></script>
-    <script src="js/share.js"></script>
   </body>
 </html>

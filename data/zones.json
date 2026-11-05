@@ -1,1 +1,23 @@
-[] 
+[
+  {
+    "id": "demo-cp-1",
+    "name": "Demo zone near Connaught Place",
+    "lat": 28.6329,
+    "lng": 77.2195,
+    "radiusMeters": 350
+  },
+  {
+    "id": "demo-cp-2",
+    "name": "Demo zone near India Gate",
+    "lat": 28.6129,
+    "lng": 77.2295,
+    "radiusMeters": 300
+  },
+  {
+    "id": "demo-cp-3",
+    "name": "Demo zone near Karol Bagh",
+    "lat": 28.6514,
+    "lng": 77.1907,
+    "radiusMeters": 300
+  }
+]
