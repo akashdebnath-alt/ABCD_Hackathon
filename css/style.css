@@ -126,6 +126,12 @@ h2 { font-size: 1.2rem; line-height: 1.3; letter-spacing: -.02em; }
 .route-steps li { padding: var(--space-2) var(--space-3); border-radius: var(--radius-sm); background: var(--surface-raised); }
 .step-instruction { display: block; font-size: .86rem; }
 .step-distance { display: block; margin-top: var(--space-1); color: var(--muted); font-size: .76rem; }
+.route-options-heading { margin: var(--space-4) 0 var(--space-2); font-size: .95rem; }
+.route-options { display: grid; gap: var(--space-2); }
+.route-option { display: flex; width: 100%; min-height: 3.5rem; align-items: center; padding: var(--space-3); border: 1px solid var(--line); border-radius: var(--radius-sm); color: var(--text); background: var(--surface); text-align: left; cursor: pointer; }
+.route-option[aria-pressed="true"] { border-color: var(--primary); box-shadow: 0 0 0 2px color-mix(in srgb, var(--primary) 16%, transparent); }
+.route-option span { display: grid; gap: var(--space-1); }
+.route-option small { color: var(--muted); font-size: .8rem; }
 .disclaimer, .demo-note { margin: var(--space-3) 0 0; color: var(--muted); font-size: .78rem; line-height: 1.5; }
 .recent-searches { margin-top: var(--space-6); }
 .section-heading { display: flex; align-items: center; justify-content: space-between; }

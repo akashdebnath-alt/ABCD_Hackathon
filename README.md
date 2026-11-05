@@ -50,6 +50,7 @@ safewalk/
 ## Features
 
 - Responsive route planner with lazy-loaded Leaflet map, up to five place matches, walking directions, and a route summary. These route details are not a safety assessment.
+- Compare up to three walking routes when the public routing service returns alternatives. Selecting a route updates the map, distance, estimated time, and turn-by-turn steps. The default route is not a safety recommendation.
 - Turn-by-turn steps when the public routing service provides them, plus a walk-time estimate based on 4.8 km/h; actual time varies with pace, crossings, terrain, and stops.
 - Edit or reopen a planned route from its summary or saved trip. Search results and routes rely on public services and explain when those services are unavailable.
 - Current-location starting point and one-time location sharing request browser permission only after the user presses the related button.
@@ -66,6 +67,7 @@ safewalk/
 - There is no live tracking, background location, guardian account, automatic SOS, or emergency dispatch. The 112/1091/181 links open the device's phone app.
 - The app does not rate route safety. Route and travel-time estimates are not verified safety information; check local conditions and trusted official sources before your walk.
 - The safety checklist is general preparation guidance, not exhaustive advice, emergency monitoring, or a guarantee of safety.
+- Alternative routes compare distance and estimated walking time only. The app does not receive verified incident, lighting, or route-risk data.
 - Place names are sent to Photon for geocoding when a route is requested; route coordinates are sent to the public FOSSGIS walking-routing service. Map tiles come from OpenStreetMap. These services may receive network metadata such as an IP address under their own policies.
 - SafeWalk itself has no server. Saved trip, recent-place, contact, and onboarding values remain in browser local storage until removed or cleared. Browser storage is not encrypted by this app.
 - Clearing SafeWalk data removes those app-owned local-storage entries from this browser. It does not erase browser history, shared messages, service-worker cache, or information held by external services.
