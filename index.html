@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>SafeWalk</title>
+    <link rel="stylesheet" href="css/style.css">
+  </head>
+  <body>
+    <header>
+      <a href="index.html">SafeWalk</a>
+      <nav aria-label="Main navigation">
+        <a href="track.html">Live tracking</a>
+      </nav>
+    </header>
+
+    <main>
+      <h1>Plan a safer walk</h1>
+      <section aria-labelledby="map-heading">
+        <h2 id="map-heading">Map and routes</h2>
+        <div id="map" role="region" aria-label="Map">
+          The map will be available when a map provider is configured.
+        </div>
+      </section>
+    </main>
+
+    <script src="js/firebase.js"></script>
+    <script src="js/score.js"></script>
+    <script src="js/map.js"></script>
+    <script src="js/share.js"></script>
+  </body>
+</html>
