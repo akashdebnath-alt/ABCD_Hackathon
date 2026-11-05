@@ -14,7 +14,6 @@
     <title>Plan a walk | SafeWalk</title>
     <script defer src="js/utils.js"></script>
     <script defer src="js/app.js"></script>
-    <script defer src="js/score.js"></script>
     <script defer src="js/share.js"></script>
     <script defer src="js/map.js"></script>
   </head>
@@ -72,9 +71,7 @@
             <div class="metric"><span class="metric-label">Distance</span><strong id="route-distance">—</strong></div>
             <div class="metric"><span class="metric-label">Walk estimate</span><strong id="route-duration">—</strong></div>
           </div>
-          <div class="demo-label"><span class="demo-pill">DEMO DATA</span>Illustrative zones · Delhi sample</div>
-          <div id="safety-result" class="safety-result"></div>
-          <p class="disclaimer">Illustrative demo indicator only. It is not verified safety information or a risk assessment.</p>
+          <p class="disclaimer">This route and time estimate are not a safety assessment. Check local conditions and trusted official sources before your walk.</p>
           <button id="start-trip" class="button button-primary full-button" type="button" hidden>Continue to trip sharing <span aria-hidden="true">→</span></button>
         </section>
 
@@ -116,7 +113,7 @@
         <ul class="onboarding-list">
           <li>No live tracking or guardian monitoring.</li>
           <li>No automatic SOS or emergency dispatch.</li>
-          <li>Zone indicators are illustrative Delhi demo data, not verified safety information.</li>
+          <li>No safety ratings or zone data are provided.</li>
         </ul>
         <p class="modal-privacy">Place searches and route requests use public map services. <a id="privacy-from-onboarding" href="privacy.html">Read the privacy details</a>.</p>
         <button id="dismiss-onboarding" class="button button-primary full-button" type="button">Got it</button>

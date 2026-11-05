@@ -22,8 +22,6 @@
   const leafletScript = "https://unpkg.com/leaflet@1.9.4/dist/leaflet.js";
   let map;
   let mapLoading;
-  let zones = [];
-  let zoneDataAvailable = false;
   let routeLayer;
   let currentRoute;
   let currentOrigin;
@@ -98,7 +96,6 @@
         '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
     }).addTo(map);
     mapElement.querySelector(".map-placeholder")?.remove();
-    await loadZones();
     window.setTimeout(() => map.invalidateSize(), 0);
   }
 
@@ -216,27 +213,6 @@
       `${origin.label} to ${destination.label}`;
     document.querySelector("#route-distance").textContent = `${distance} km`;
     document.querySelector("#route-duration").textContent = `~${duration} min`;
-
-    const safetyResult = document.querySelector("#safety-result");
-    safetyResult.replaceChildren();
-    if (zoneDataAvailable) {
-      const score = window.SafeWalkScore.scoreRoute(
-        route.geometry.coordinates,
-        zones,
-      );
-      const zoneText = score.nearbyZones.length
-        ? `${score.nearbyZones.length} illustrative demo zone${score.nearbyZones.length === 1 ? "" : "s"} near this route`
-        : "No illustrative demo zones near this route";
-      const number = document.createElement("span");
-      number.className = "score-number";
-      number.textContent = `${score.score}`;
-      const description = document.createElement("span");
-      description.className = "score-caption";
-      description.textContent = `Demo indicator / 100 · ${zoneText}`;
-      safetyResult.append(number, description);
-    } else {
-      safetyResult.textContent = "Demo data unavailable; no indicator is shown.";
-    }
 
     currentRoute = {
       origin: origin.label,
@@ -365,46 +341,6 @@
       if (error.name !== "AbortError") {
         setStatus(`Couldn't share route details: ${error.message}`, true);
       }
-    }
-  }
-
-  async function loadZones() {
-    try {
-      const response = await fetch("data/zones.json");
-      if (!response.ok) {
-        throw new Error(`Demo zone request failed (${response.status}).`);
-      }
-      const data = await response.json();
-      if (
-        !Array.isArray(data) ||
-        data.some(
-          (zone) =>
-            !Number.isFinite(zone.lat) ||
-            !Number.isFinite(zone.lng) ||
-            !Number.isFinite(zone.radiusMeters),
-        )
-      ) {
-        throw new Error("Demo zone data has an invalid format.");
-      }
-
-      zones = data;
-      zoneDataAvailable = true;
-      zones.forEach((zone) => {
-        const label = document.createElement("span");
-        label.textContent = utils.sanitizeText(zone.name, 120);
-        L.circle([zone.lat, zone.lng], {
-          radius: zone.radiusMeters,
-          color: "#a52b32",
-          weight: 1,
-          fillColor: "#e5a5a3",
-          fillOpacity: 0.25,
-        })
-          .bindPopup(label)
-          .addTo(map);
-      });
-    } catch (error) {
-      zoneDataAvailable = false;
-      utils.showToast(`Demo zone data unavailable: ${error.message}`, "error");
     }
   }
 
