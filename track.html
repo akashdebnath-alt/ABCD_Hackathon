@@ -1,62 +1,93 @@
 <!doctype html>
 <html lang="en">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>SafeWalk — Live tracking</title>
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
-  <style>
-    body{margin:0;font-family:Arial,sans-serif;background:#f7f8f4}
-    header{display:flex;justify-content:space-between;align-items:center;padding:12px 16px;background:#fff;border-bottom:1px solid #ddd}
-    header a{color:#222;text-decoration:none;font-weight:bold}
-    #status{padding:12px;text-align:center;font-weight:bold;background:#2e7d32;color:#fff}
-    #status.sos{background:#c62828}
-    #status.wait{background:#666}
-    #map{height:calc(100vh - 105px)}
-  </style>
-</head>
-<body>
-  <header><a href="index.html">← SafeWalk</a><span>Live tracking</span></header>
-  <div id="status" class="wait">Waiting for location...</div>
-  <div id="map"></div>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <meta name="theme-color" content="#f5f4fb">
+    <meta name="description" content="Review and intentionally share trip details or a one-time location link. No live tracking.">
+    <meta property="og:title" content="Share your trip | SafeWalk">
+    <meta property="og:description" content="Choose whether to share trip details or a one-time location link.">
+    <meta property="og:type" content="website">
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" href="assets/icon.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="css/style.css">
+    <title>Share your trip | SafeWalk</title>
+    <script defer src="js/utils.js"></script>
+    <script defer src="js/app.js"></script>
+    <script defer src="js/share.js"></script>
+    <script defer src="js/track.js"></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main-content">Skip to main content</a>
+    <header class="site-header">
+      <a class="brand" href="index.html" aria-label="SafeWalk home"><span class="brand-mark" aria-hidden="true">S</span>SafeWalk</a>
+      <nav class="primary-nav" aria-label="Main navigation">
+        <a class="nav-link" href="index.html"><span aria-hidden="true">⌖</span> Plan a walk</a>
+        <a class="nav-link" aria-current="page" href="track.html"><span aria-hidden="true">↗</span> Share trip</a>
+        <a class="nav-link" href="safety.html"><span aria-hidden="true">♡</span> Safety tools</a>
+      </nav>
+      <a class="header-privacy" href="privacy.html"><span class="privacy-dot" aria-hidden="true"></span>Sharing is your choice</a>
+    </header>
 
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
-  <script src="js/firebase.js"></script>
-  <script>
-    const id = new URLSearchParams(location.search).get('id');
-    const statusEl = document.getElementById('status');
-    const map = L.map('map').setView([28.6139, 77.2090], 12);
-    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '© OpenStreetMap contributors'
-    }).addTo(map);
+    <div id="offline-banner" class="offline-banner" role="status" hidden>You’re offline. Saved trip details are available; sharing and location links may require a connection.</div>
+    <main id="main-content" class="feature-shell">
+      <section class="feature-card card" aria-labelledby="page-title">
+        <div class="eyebrow">KEEP SOMEONE YOU TRUST IN THE LOOP</div>
+        <h1 id="page-title">Share your trip.</h1>
+        <p class="intro">Choose trip details or a separate one-time location share. SafeWalk does not create a live tracking link.</p>
 
-    let marker = null, first = true, last = null;
+        <section id="trip-details" class="trip-details card-inset" aria-labelledby="trip-route" hidden>
+          <div class="result-heading">
+            <div><span class="eyebrow">SAVED IN THIS BROWSER</span><h2 id="trip-route"></h2></div>
+            <span class="demo-pill">PRIVATE</span>
+          </div>
+          <div class="metrics-row">
+            <div class="metric"><span class="metric-label">Distance</span><strong id="trip-distance">—</strong></div>
+            <div class="metric"><span class="metric-label">Walk estimate</span><strong id="trip-duration">—</strong></div>
+          </div>
+          <p id="trip-time" class="muted-copy"></p>
+          <button id="share-trip" class="button button-primary full-button" type="button">Share trip details <span aria-hidden="true">↗</span></button>
+          <button id="stop-trip" class="button button-secondary full-button" type="button">Remove saved trip</button>
+        </section>
 
-    if (!id) {
-      statusEl.textContent = 'No trip link. Ask your contact to share again.';
-    } else {
-      db.ref('trips/' + id).on('value', snap => {
-        const d = snap.val();
-        if (!d) return;
-        last = d;
-        const pos = [d.lat, d.lng];
-        if (!marker) marker = L.marker(pos).addTo(map); else marker.setLatLng(pos);
-        if (first) { map.setView(pos, 17); first = false; } else { map.panTo(pos); }
-        render();
-      });
-      setInterval(render, 1000);
-    }
+        <div id="no-trip" class="empty-state card-inset">
+          <h2>No planned trip yet</h2>
+          <p>Plan a route to save its start, destination, distance, and estimated walk time in this browser.</p>
+          <a class="button button-secondary" href="index.html">Plan a walk <span aria-hidden="true">→</span></a>
+        </div>
 
-    function render() {
-      if (!last) return;
-      const secs = Math.max(0, Math.round((Date.now() - last.time) / 1000));
-      statusEl.className = last.sos ? 'sos' : '';
-      statusEl.textContent = last.sos
-        ? '🚨 SOS ALERT! Last update ' + secs + 's ago'
-        : '✅ Live. Updated ' + secs + 's ago';
-    }
-  </script>
-</body>
+        <section class="location-share card-inset" aria-labelledby="location-heading">
+          <div class="section-icon" aria-hidden="true">◎</div>
+          <h2 id="location-heading">Share my location once</h2>
+          <p>Location sirf tab share hoti hai jab aap dabate ho. Browser permission ke baad one-time map link aapke chosen share app mein khulega.</p>
+          <button id="share-location" class="button button-secondary full-button" type="button">Get location and share once</button>
+        </section>
+
+        <p id="track-status" class="status" role="status" aria-live="polite"></p>
+        <aside class="notice"><strong>Privacy note</strong><br>One-time share is not continuous tracking. SafeWalk has no server, guardian accounts, or live location feed.</aside>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <p>Trip details stay in this browser until removed. <a href="privacy.html">Privacy details</a></p>
+      <p class="emergency-links"><a href="tel:112">Emergency 112</a><a href="tel:1091">Women Helpline 1091</a><a href="tel:181">Women Helpline 181</a></p>
+    </footer>
+    <nav class="mobile-nav" aria-label="Mobile navigation">
+      <a href="index.html"><span aria-hidden="true">⌖</span>Plan</a>
+      <a aria-current="page" href="track.html"><span aria-hidden="true">↗</span>Share</a>
+      <a href="safety.html"><span aria-hidden="true">♡</span>Safety</a>
+      <a href="privacy.html"><span aria-hidden="true">◉</span>Privacy</a>
+    </nav>
+    <div id="app-toast" class="toast" role="status" aria-live="polite" aria-atomic="true" hidden></div>
+    <dialog id="onboarding-dialog" class="modal">
+      <div class="modal-content">
+        <span class="brand-mark" aria-hidden="true">S</span><p class="eyebrow">WELCOME TO SAFEWALK</p>
+        <h2>A planning aid, not an emergency service.</h2>
+        <p>Location is only requested after you press a location button.</p>
+        <ul class="onboarding-list"><li>No live tracking or guardian monitoring.</li><li>No automatic SOS or emergency dispatch.</li><li>Zone indicators are illustrative demo data only.</li></ul>
+        <p class="modal-privacy">Place searches and route requests use public map services. <a id="privacy-from-onboarding" href="privacy.html">Read privacy details</a>.</p>
+        <button id="dismiss-onboarding" class="button button-primary full-button" type="button">Got it</button>
+      </div>
+    </dialog>
+  </body>
 </html>

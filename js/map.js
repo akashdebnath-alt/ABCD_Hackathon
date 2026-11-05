@@ -1,20 +1,29 @@
 (function () {
   "use strict";
 
+  const utils = window.SafeWalkUtils;
   const form = document.querySelector("#route-form");
   const originInput = document.querySelector("#origin");
   const destinationInput = document.querySelector("#destination");
   const locationButton = document.querySelector("#use-location");
   const submitButton = document.querySelector("#plan-route");
   const shareButton = document.querySelector("#share-route");
+  const startTripButton = document.querySelector("#start-trip");
   const status = document.querySelector("#status");
   const result = document.querySelector("#route-result");
+  const loading = document.querySelector("#route-loading");
+  const mapPanel = document.querySelector(".map-panel");
+  const mapElement = document.querySelector("#map");
   const mapHint = document.querySelector(".map-hint");
+  const recentSection = document.querySelector("#recent-searches");
+  const recentList = document.querySelector("#recent-list");
 
+  const leafletCss = "https://unpkg.com/leaflet@1.9.4/dist/leaflet.css";
+  const leafletScript = "https://unpkg.com/leaflet@1.9.4/dist/leaflet.js";
   let map;
+  let mapLoading;
   let zones = [];
   let zoneDataAvailable = false;
-  let zonesLoading;
   let routeLayer;
   let currentRoute;
   let currentOrigin;
@@ -35,6 +44,64 @@
     );
   }
 
+  function loadStylesheet() {
+    if (document.querySelector('link[data-leaflet-css]')) {
+      return;
+    }
+
+    const link = document.createElement("link");
+    link.rel = "stylesheet";
+    link.href = leafletCss;
+    link.integrity =
+      "sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=";
+    link.crossOrigin = "";
+    link.dataset.leafletCss = "true";
+    document.head.append(link);
+  }
+
+  function loadLeaflet() {
+    if (window.L) {
+      return Promise.resolve();
+    }
+    if (mapLoading) {
+      return mapLoading;
+    }
+
+    loadStylesheet();
+    mapLoading = new Promise((resolve, reject) => {
+      const script = document.createElement("script");
+      script.src = leafletScript;
+      script.integrity =
+        "sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=";
+      script.crossOrigin = "";
+      script.onload = () => resolve();
+      script.onerror = () => {
+        mapLoading = undefined;
+        reject(new Error("Map couldn't load. Check your internet connection and try again."));
+      };
+      document.head.append(script);
+    });
+
+    return mapLoading;
+  }
+
+  async function ensureMap() {
+    await loadLeaflet();
+    if (map) {
+      return;
+    }
+
+    map = L.map(mapElement).setView([28.6329, 77.2195], 13);
+    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+      maxZoom: 19,
+      attribution:
+        '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+    }).addTo(map);
+    mapElement.querySelector(".map-placeholder")?.remove();
+    await loadZones();
+    window.setTimeout(() => map.invalidateSize(), 0);
+  }
+
   async function geocode(query) {
     const url = new URL("https://photon.komoot.io/api/");
     url.searchParams.set("q", query);
@@ -42,7 +109,7 @@
 
     const response = await fetch(url);
     if (!response.ok) {
-      throw new Error("Place search is temporarily unavailable. Please try again.");
+      throw new Error("Place search is unavailable right now. Try again when online.");
     }
 
     const data = await response.json();
@@ -64,15 +131,55 @@
     const url = `https://routing.openstreetmap.de/routed-foot/route/v1/driving/${coordinates}?overview=full&geometries=geojson&alternatives=false&steps=false`;
     const response = await fetch(url);
     if (!response.ok) {
-      throw new Error("Walking directions are temporarily unavailable. Please try again.");
+      throw new Error("Walking directions are unavailable right now. Please try again.");
     }
 
     const data = await response.json();
     if (data.code !== "Ok" || !data.routes || !data.routes[0]) {
-      throw new Error("No walking route was found between those places.");
+      throw new Error("No walking route was found. Try closer or different places.");
+    }
+    return data.routes[0];
+  }
+
+  function renderRecentSearches() {
+    const recent = utils.getItem(utils.keys.recentSearches, []);
+    recentList.replaceChildren();
+    if (!Array.isArray(recent) || recent.length === 0) {
+      recentSection.hidden = true;
+      return;
     }
 
-    return data.routes[0];
+    recent.slice(0, 5).forEach((item) => {
+      if (!item || typeof item.origin !== "string" || typeof item.destination !== "string") {
+        return;
+      }
+      const entry = document.createElement("li");
+      const button = document.createElement("button");
+      button.type = "button";
+      button.textContent = `${item.origin} → ${item.destination}`;
+      button.addEventListener("click", () => {
+        originInput.value = item.origin;
+        destinationInput.value = item.destination;
+        currentOrigin = undefined;
+        form.requestSubmit();
+      });
+      entry.append(button);
+      recentList.append(entry);
+    });
+    recentSection.hidden = recentList.childElementCount === 0;
+  }
+
+  function saveRecentSearch(origin, destination) {
+    const recent = utils.getItem(utils.keys.recentSearches, []);
+    const next = Array.isArray(recent) ? recent : [];
+    const updated = [
+      { origin, destination },
+      ...next.filter(
+        (item) => item.origin !== origin || item.destination !== destination,
+      ),
+    ].slice(0, 5);
+    utils.setItem(utils.keys.recentSearches, updated);
+    renderRecentSearches();
   }
 
   function showRoute(origin, destination, route) {
@@ -81,23 +188,21 @@
     }
 
     const line = L.geoJSON(route.geometry, {
-      style: { color: "#245c46", weight: 5, opacity: 0.88 },
+      style: { color: "#514294", weight: 5, opacity: 0.9 },
     });
     const bounds = line.getBounds();
     routeLayer = L.featureGroup([line]);
 
     [
-      { place: origin, color: "#438360", label: "Start" },
-      { place: destination, color: "#e18263", label: "Destination" },
+      { place: origin, color: "#11766f", label: "Start" },
+      { place: destination, color: "#a52b32", label: "Destination" },
     ].forEach(({ place, color, label }) => {
-      const marker = L.circleMarker([place.coordinates[1], place.coordinates[0]], {
-        radius: 7,
-        color: "#fff",
-        weight: 3,
-        fillColor: color,
-        fillOpacity: 1,
-      })
-        .bindPopup(`${label}: ${place.label}`);
+      const popup = document.createElement("span");
+      popup.textContent = `${label}: ${utils.sanitizeText(place.label, 160)}`;
+      const marker = L.circleMarker(
+        [place.coordinates[1], place.coordinates[0]],
+        { radius: 8, color: "#fff", weight: 3, fillColor: color, fillOpacity: 1 },
+      ).bindPopup(popup);
       routeLayer.addLayer(marker);
       bounds.extend(marker.getLatLng());
     });
@@ -109,20 +214,19 @@
     const duration = Math.max(1, Math.round(route.duration / 60));
     document.querySelector("#route-summary").textContent =
       `${origin.label} to ${destination.label}`;
-    document.querySelector("#route-meta").textContent =
-      `${distance} km · approximately ${duration} min walking`;
+    document.querySelector("#route-distance").textContent = `${distance} km`;
+    document.querySelector("#route-duration").textContent = `~${duration} min`;
 
     const safetyResult = document.querySelector("#safety-result");
+    safetyResult.replaceChildren();
     if (zoneDataAvailable) {
       const score = window.SafeWalkScore.scoreRoute(
         route.geometry.coordinates,
         zones,
       );
       const zoneText = score.nearbyZones.length
-        ? `${score.nearbyZones.length} illustrative zone${score.nearbyZones.length === 1 ? "" : "s"} near this route`
-        : "No illustrative zones near this route";
-      safetyResult.replaceChildren();
-
+        ? `${score.nearbyZones.length} illustrative demo zone${score.nearbyZones.length === 1 ? "" : "s"} near this route`
+        : "No illustrative demo zones near this route";
       const number = document.createElement("span");
       number.className = "score-number";
       number.textContent = `${score.score}`;
@@ -131,7 +235,7 @@
       description.textContent = `Demo indicator / 100 · ${zoneText}`;
       safetyResult.append(number, description);
     } else {
-      safetyResult.textContent = "Demo zone data couldn't be loaded.";
+      safetyResult.textContent = "Demo data unavailable; no indicator is shown.";
     }
 
     currentRoute = {
@@ -140,42 +244,82 @@
       distance,
       duration,
     };
+    startTripButton.hidden = false;
     result.hidden = false;
     mapHint.hidden = true;
   }
 
+  function startTrip() {
+    if (!currentRoute) {
+      return;
+    }
+
+    if (
+      utils.setItem(utils.keys.activeTrip, {
+        ...currentRoute,
+        startedAt: new Date().toISOString(),
+      })
+    ) {
+      window.location.href = "track.html";
+    }
+  }
+
   async function planRoute(event) {
     event.preventDefault();
-    const originQuery = originInput.value.trim();
-    const destinationQuery = destinationInput.value.trim();
+    const originQuery = utils.sanitizeText(originInput.value, 160);
+    const destinationQuery = utils.sanitizeText(destinationInput.value, 160);
+    originInput.value = originQuery;
+    destinationInput.value = destinationQuery;
     if (!originQuery || !destinationQuery) {
       setStatus("Enter both a starting point and a destination.", true);
+      return;
+    }
+    if (!navigator.onLine) {
+      setStatus("You're offline. Connect to the internet to search places and directions.", true);
       return;
     }
 
     currentRoute = undefined;
     result.hidden = true;
+    loading.hidden = false;
+    startTripButton.hidden = true;
+    mapHint.hidden = false;
+    if (routeLayer && map) {
+      map.removeLayer(routeLayer);
+      routeLayer = undefined;
+    }
     submitButton.disabled = true;
-    submitButton.textContent = "Finding a walking route…";
+    submitButton.querySelector(".button-label").textContent = "Finding a walking route…";
     setStatus("Searching for places and walking directions…");
+
     try {
+      const usedCurrentLocation = Boolean(currentOrigin);
       const origin = currentOrigin || (await geocode(originQuery));
       const destination = await geocode(destinationQuery);
-      await zonesLoading;
+      await ensureMap();
       const route = await requestWalkingRoute(origin, destination);
       showRoute(origin, destination, route);
+      if (!usedCurrentLocation) {
+        saveRecentSearch(originQuery, destinationQuery);
+      }
       setStatus("Route ready. Check local conditions before you set off.");
     } catch (error) {
-      setStatus(error.message || "Couldn't plan that route. Please try again.", true);
+      setStatus(
+        error instanceof TypeError
+          ? "Connection problem. Check your internet connection and public map services, then try again."
+          : error.message || "Couldn't plan that route. Please try again.",
+        true,
+      );
     } finally {
+      loading.hidden = true;
       submitButton.disabled = false;
-      submitButton.innerHTML = 'Show my route <span aria-hidden="true">→</span>';
+      submitButton.querySelector(".button-label").textContent = "Show walking route";
     }
   }
 
   function useCurrentLocation() {
     if (!navigator.geolocation) {
-      setStatus("Location isn't supported by this browser. Enter a place instead.", true);
+      setStatus("Location isn't supported by this browser. Enter a starting place instead.", true);
       return;
     }
 
@@ -189,11 +333,11 @@
         };
         originInput.value = currentOrigin.label;
         locationButton.disabled = false;
-        setStatus("Starting point set to your current location.");
+        setStatus("Starting point set. Location is only used if you request directions.");
       },
       (error) => {
         const messages = {
-          1: "Location permission was denied. You can enter a starting place instead.",
+          1: "Location permission was denied. Enter a starting place instead.",
           2: "Your location couldn't be determined. Try again or enter a place.",
           3: "Location request timed out. Try again or enter a place.",
         };
@@ -208,13 +352,18 @@
     if (!currentRoute) {
       return;
     }
-
     try {
-      await window.SafeWalkShare.shareRoute(currentRoute);
-      setStatus("Route shared.");
+      const method = await window.SafeWalkShare.shareRoute(currentRoute);
+      const messages = {
+        shared: "Share sheet opened for your route details.",
+        copied: "Route details copied; paste them into your chosen app.",
+        prompted: "Route details shown for you to copy.",
+        cancelled: "Sharing cancelled; no message was sent.",
+      };
+      setStatus(messages[method]);
     } catch (error) {
       if (error.name !== "AbortError") {
-        setStatus(`Couldn't share the route: ${error.message}`, true);
+        setStatus(`Couldn't share route details: ${error.message}`, true);
       }
     }
   }
@@ -223,7 +372,7 @@
     try {
       const response = await fetch("data/zones.json");
       if (!response.ok) {
-        throw new Error(`Zone data request failed (${response.status}).`);
+        throw new Error(`Demo zone request failed (${response.status}).`);
       }
       const data = await response.json();
       if (
@@ -235,47 +384,67 @@
             !Number.isFinite(zone.radiusMeters),
         )
       ) {
-        throw new Error("Zone data has an invalid format.");
+        throw new Error("Demo zone data has an invalid format.");
       }
 
       zones = data;
       zoneDataAvailable = true;
-      zones.forEach((zone) =>
+      zones.forEach((zone) => {
+        const label = document.createElement("span");
+        label.textContent = utils.sanitizeText(zone.name, 120);
         L.circle([zone.lat, zone.lng], {
           radius: zone.radiusMeters,
-          color: "#cf7459",
+          color: "#a52b32",
           weight: 1,
-          fillColor: "#e89a7e",
-          fillOpacity: 0.24,
+          fillColor: "#e5a5a3",
+          fillOpacity: 0.25,
         })
-          .bindPopup(zone.name)
-          .addTo(map),
-      );
+          .bindPopup(label)
+          .addTo(map);
+      });
     } catch (error) {
-      setStatus(`Demo zone overlay unavailable: ${error.message}`, true);
+      zoneDataAvailable = false;
+      utils.showToast(`Demo zone data unavailable: ${error.message}`, "error");
     }
   }
 
-  function initialize() {
-    if (!window.L) {
-      setStatus("The map library didn't load. Check your connection and reload.", true);
+  function initializeMapOnDemand() {
+    if ("IntersectionObserver" in window) {
+      const observer = new IntersectionObserver(
+        (entries) => {
+          if (entries.some((entry) => entry.isIntersecting)) {
+            observer.disconnect();
+            ensureMap().catch((error) => {
+              utils.showToast(error.message, "error");
+              mapElement.querySelector(".map-placeholder")?.replaceChildren(
+                document.createTextNode(error.message),
+              );
+              mapElement.setAttribute("aria-label", error.message);
+            });
+          }
+        },
+        { rootMargin: "200px" },
+      );
+      observer.observe(mapPanel);
       return;
     }
-
-    map = L.map("map").setView([28.6329, 77.2195], 13);
-    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-      maxZoom: 19,
-      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
-    }).addTo(map);
-
-    form.addEventListener("submit", planRoute);
-    originInput.addEventListener("input", () => {
-      currentOrigin = undefined;
-    });
-    locationButton.addEventListener("click", useCurrentLocation);
-    shareButton.addEventListener("click", shareCurrentRoute);
-    zonesLoading = loadZones();
+    ensureMap().catch((error) => utils.showToast(error.message, "error"));
   }
 
-  initialize();
+  originInput.addEventListener("input", () => {
+    currentOrigin = undefined;
+  });
+  form.addEventListener("submit", planRoute);
+  locationButton.addEventListener("click", useCurrentLocation);
+  shareButton.addEventListener("click", shareCurrentRoute);
+  startTripButton.addEventListener("click", startTrip);
+  document.querySelector("#clear-recents").addEventListener("click", () => {
+    if (utils.removeItem(utils.keys.recentSearches)) {
+      renderRecentSearches();
+      utils.showToast("Recent places cleared.", "success");
+    }
+  });
+
+  renderRecentSearches();
+  initializeMapOnDemand();
 })();

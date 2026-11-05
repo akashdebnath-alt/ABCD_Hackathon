@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <meta name="theme-color" content="#f5f4fb">
+    <meta name="description" content="SafeWalk privacy information: browser storage, user-triggered location, and third-party map services.">
+    <meta property="og:title" content="Privacy | SafeWalk">
+    <meta property="og:description" content="Learn what SafeWalk stores locally and when your location is used.">
+    <meta property="og:type" content="website">
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" href="assets/icon.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="css/style.css">
+    <title>Privacy | SafeWalk</title>
+    <script defer src="js/utils.js"></script>
+    <script defer src="js/app.js"></script>
+    <script defer src="js/privacy.js"></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main-content">Skip to main content</a>
+    <header class="site-header">
+      <a class="brand" href="index.html" aria-label="SafeWalk home"><span class="brand-mark" aria-hidden="true">S</span>SafeWalk</a>
+      <nav class="primary-nav" aria-label="Main navigation">
+        <a class="nav-link" href="index.html"><span aria-hidden="true">⌖</span> Plan a walk</a>
+        <a class="nav-link" href="track.html"><span aria-hidden="true">↗</span> Share trip</a>
+        <a class="nav-link" href="safety.html"><span aria-hidden="true">♡</span> Safety tools</a>
+      </nav>
+      <span class="header-privacy">Your data, your choice</span>
+    </header>
+
+    <main id="main-content" class="feature-shell">
+      <article class="feature-card card privacy-page">
+        <div class="eyebrow">CLEAR INFORMATION, NO SURPRISES</div>
+        <h1 id="page-title">Privacy.</h1>
+        <p class="intro">SafeWalk is a browser-only demo. It has no application server or user accounts.</p>
+
+        <section class="privacy-section">
+          <h2>What SafeWalk stores</h2>
+          <p>SafeWalk does not send your saved trip, trusted contact, recent searches, or onboarding preference to a SafeWalk server. These items may be stored in this browser’s local storage:</p>
+          <ul>
+            <li>Planned trip place names, distance, and walk estimate.</li>
+            <li>Recent places you searched for.</li>
+            <li>A trusted contact name and phone number, if you save one.</li>
+            <li>Whether you dismissed the first-visit explanation.</li>
+          </ul>
+          <p>Browser storage is not encrypted by SafeWalk. Other people with access to this device or browser profile may be able to view it.</p>
+        </section>
+
+        <section class="privacy-section">
+          <h2>When location is used</h2>
+          <p>SafeWalk asks the browser for location only after you press a current-location, one-time location-share, or alert-share button. It does not request location on page load or track location in the background.</p>
+          <p>If you choose to share, the browser opens a share sheet or copy prompt. You choose the recipient and whether to send. SafeWalk does not deliver messages or create a live tracking link.</p>
+        </section>
+
+        <section class="privacy-section">
+          <h2>External map and sharing services</h2>
+          <p>When you request directions, the entered place names are sent to Photon for search and the resulting route coordinates are sent to the public OpenStreetMap-based routing service. Map tiles come from OpenStreetMap. These providers may receive normal network information such as your IP address under their own policies.</p>
+          <p>Sharing uses your browser or operating system’s share and dialer features. Their behavior and privacy policies are outside SafeWalk’s control.</p>
+        </section>
+
+        <section class="privacy-section">
+          <h2>Clear SafeWalk data</h2>
+          <p>This removes SafeWalk’s trip, recent-place, trusted-contact, and onboarding entries from this browser. It does not clear browser history, shared messages, service-worker files, or data held by third-party services.</p>
+          <button id="clear-data" class="button button-danger" type="button">Clear my SafeWalk data</button>
+        </section>
+
+        <section class="privacy-section">
+          <h2>Demo limitations</h2>
+          <p>Safety zones are illustrative sample data for Delhi, not verified or current safety reports. There is no live tracking, automatic SOS, guardian service, or emergency dispatch. In India, the emergency number links are 112, Women Helpline 1091, and Women Helpline 181; a dial link opens your device’s phone app.</p>
+        </section>
+      </article>
+    </main>
+
+    <footer class="site-footer">
+      <p>Privacy information for this browser-based demo. <a href="index.html">Back to SafeWalk</a></p>
+      <p class="emergency-links"><a href="tel:112">Emergency 112</a><a href="tel:1091">Women Helpline 1091</a><a href="tel:181">Women Helpline 181</a></p>
+    </footer>
+    <nav class="mobile-nav" aria-label="Mobile navigation">
+      <a href="index.html"><span aria-hidden="true">⌖</span>Plan</a>
+      <a href="track.html"><span aria-hidden="true">↗</span>Share</a>
+      <a href="safety.html"><span aria-hidden="true">♡</span>Safety</a>
+      <a aria-current="page" href="privacy.html"><span aria-hidden="true">◉</span>Privacy</a>
+    </nav>
+    <div id="app-toast" class="toast" role="status" aria-live="polite" aria-atomic="true" hidden></div>
+    <dialog id="onboarding-dialog" class="modal">
+      <div class="modal-content">
+        <span class="brand-mark" aria-hidden="true">S</span><p class="eyebrow">WELCOME TO SAFEWALK</p>
+        <h2>A planning aid, not an emergency service.</h2>
+        <p>Location is only requested after you press a location button.</p>
+        <ul class="onboarding-list"><li>No live tracking or guardian monitoring.</li><li>No automatic SOS or emergency dispatch.</li><li>Zone indicators are illustrative demo data only.</li></ul>
+        <p class="modal-privacy">Place searches and route requests use public map services. <a id="privacy-from-onboarding" href="privacy.html">Read privacy details</a>.</p>
+        <button id="dismiss-onboarding" class="button button-primary full-button" type="button">Got it</button>
+      </div>
+    </dialog>
+  </body>
+</html>
