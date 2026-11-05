@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SafeWalk — Live sharing</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <style>
+    body{margin:0;font-family:Arial,sans-serif;background:#f4f2fa;color:#222}
+    header{padding:14px 16px;background:#fff;border-bottom:1px solid #ddd;display:flex;justify-content:space-between}
+    header a{color:#4f4090;font-weight:bold;text-decoration:none}
+    .wrap{max-width:560px;margin:0 auto;padding:16px}
+    h1{margin:8px 0}
+    p{color:#555}
+    button{width:100%;padding:16px;margin-top:10px;font-size:16px;font-weight:bold;border:none;border-radius:12px;background:#4f4090;color:#fff;cursor:pointer}
+    button.sos{background:#c62828}
+    button.stop{background:#fff;color:#4f4090;border:2px solid #4f4090}
+    .box{background:#fff;border-radius:12px;padding:14px;margin-top:12px;word-break:break-all}
+    #bar{padding:12px;text-align:center;font-weight:bold;color:#fff;background:#666}
+    #bar.live{background:#2e7d32}
+    #bar.sos{background:#c62828}
+    #map{height:75vh}
+    .hidden{display:none}
+  </style>
+</head>
+<body>
+  <header><a href="index.html">← SafeWalk</a><span>Live sharing</span></header>
+
+  <!-- SENDER VIEW -->
+  <div id="sender" class="wrap">
+    <h1>Share my live location</h1>
+    <p>Only people you send the link to can see you. Tap Stop to end sharing and delete your location.</p>
+    <button id="startBtn">▶ Start live sharing</button>
+
+    <div id="active" class="hidden">
+      <div class="box">✅ You are sharing live. Send this link to someone you trust:<br><br><b id="link"></b></div>
+      <button id="waBtn">Send via WhatsApp</button>
+      <button id="copyBtn" class="stop">Copy link</button>
+      <button id="sosBtn" class="sos">🚨 SOS — alert my contact</button>
+      <button id="stopBtn" class="stop">■ Stop sharing</button>
+    </div>
+  </div>
+
+  <!-- VIEWER VIEW -->
+  <div id="viewer" class="hidden">
+    <div id="bar">Waiting for location...</div>
+    <div id="map"></div>
+  </div>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+  <script src="js/firebase.js"></script>
+  <script>
+    const $ = id => document.getElementById(id);
+    const viewId = new URLSearchParams(location.search).get('id');
+
+    if (viewId) {
+      /* ---------- VIEWER ---------- */
+      $('sender').classList.add('hidden');
+      $('viewer').classList.remove('hidden');
+      const map = L.map('map').setView([28.6139, 77.2090], 12);
+      L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+        { attribution: '© OpenStreetMap contributors' }).addTo(map);
+      let marker = null, first = true, last = null;
+
+      db.ref('trips/' + viewId).on('value', snap => {
+        const d = snap.val();
+        if (!d) { $('bar').className = ''; $('bar').textContent = 'Sharing has ended or not started yet.'; return; }
+        last = d;
+        const pos = [d.lat, d.lng];
+        if (!marker) marker = L.marker(pos).addTo(map); else marker.setLatLng(pos);
+        if (first) { map.setView(pos, 17); first = false; } else map.panTo(pos);
+        render();
+      });
+      setInterval(render, 1000);
+      function render() {
+        if (!last) return;
+        const s = Math.max(0, Math.round((Date.now() - last.time) / 1000));
+        $('bar').className = last.sos ? 'sos' : 'live';
+        $('bar').textContent = last.sos ? '🚨 SOS ALERT! Updated ' + s + 's ago'
+                                        : '✅ Live. Updated ' + s + 's ago';
+      }
+    } else {
+      /* ---------- SENDER ---------- */
+      let tripId = null, watchId = null, sos = false;
+      const url = () => location.origin + location.pathname + '?id=' + tripId;
+
+      $('startBtn').onclick = () => {
+        if (!navigator.geolocation) { alert('Location is not supported on this device.'); return; }
+        tripId = Math.random().toString(36).slice(2, 8);
+        watchId = navigator.geolocation.watchPosition(
+          p => db.ref('trips/' + tripId).set({
+            lat: p.coords.latitude, lng: p.coords.longitude, time: Date.now(), sos: sos
+          }),
+          () => alert('Please allow location access.'),
+          { enableHighAccuracy: true, maximumAge: 2000 }
+        );
+        $('link').textContent = url();
+        $('startBtn').classList.add('hidden');
+        $('active').classList.remove('hidden');
+      };
+      $('waBtn').onclick = () => window.open('https://wa.me/?text=' +
+        encodeURIComponent('Follow my live location on SafeWalk: ' + url()), '_blank');
+      $('copyBtn').onclick = () => navigator.clipboard.writeText(url()).then(() => alert('Link copied'));
+      $('sosBtn').onclick = () => { sos = true; db.ref('trips/' + tripId + '/sos').set(true);
+        window.open('https://wa.me/?text=' + encodeURIComponent('🚨 SOS! I need help. My live location: ' + url()), '_blank'); };
+      $('stopBtn').onclick = () => {
+        navigator.geolocation.clearWatch(watchId);
+        db.ref('trips/' + tripId).remove();
+        sos = false; tripId = null;
+        $('active').classList.add('hidden');
+        $('startBtn').classList.remove('hidden');
+      };
+    }
+  </script>
+</body>
+</html>
