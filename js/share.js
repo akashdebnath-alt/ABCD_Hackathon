@@ -1,22 +1,42 @@
 (function () {
   "use strict";
 
-  async function shareRoute(route) {
-    const text = `My SafeWalk route: ${route.origin} to ${route.destination} (${route.distance} km, about ${route.duration} min). Demo route only; check local conditions.`;
-
+  async function shareText(text) {
     if (navigator.share) {
-      await navigator.share({ title: "My SafeWalk route", text });
-      return;
+      try {
+        await navigator.share({ title: "SafeWalk", text });
+        return "shared";
+      } catch (error) {
+        if (error.name === "AbortError") {
+          return "cancelled";
+        }
+        if (error.name !== "NotAllowedError") {
+          throw error;
+        }
+      }
     }
 
     if (navigator.clipboard && window.isSecureContext) {
-      await navigator.clipboard.writeText(text);
-      window.alert("Route details copied. You can paste them into a message.");
-      return;
+      try {
+        await navigator.clipboard.writeText(text);
+        window.SafeWalkUtils.showToast("Message copied. Paste it into your chosen app.", "success");
+        return "copied";
+      } catch {
+        return window.prompt("Copy this SafeWalk message:", text) === null
+          ? "cancelled"
+          : "prompted";
+      }
     }
 
-    window.prompt("Copy your route details:", text);
+    return window.prompt("Copy this SafeWalk message:", text) === null
+      ? "cancelled"
+      : "prompted";
   }
 
-  window.SafeWalkShare = { shareRoute };
+  async function shareRoute(route) {
+    const text = `My SafeWalk route: ${route.origin} to ${route.destination} (${route.distance} km, about ${route.duration} min). Demo route only; check local conditions.`;
+    return shareText(text);
+  }
+
+  window.SafeWalkShare = { shareRoute, shareText };
 })();

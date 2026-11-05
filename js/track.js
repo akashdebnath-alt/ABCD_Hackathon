@@ -1,164 +1,120 @@
 (function () {
   "use strict";
 
-  const startButton = document.querySelector("#start-tracking");
-  const stopButton = document.querySelector("#stop-tracking");
-  const shareButton = document.querySelector("#share-location");
-  const status = document.querySelector("#tracking-status");
-  const coordinates = document.querySelector("#coordinates");
-  const accuracy = document.querySelector("#accuracy");
-  const lastUpdated = document.querySelector("#last-updated");
-  const mapHint = document.querySelector("#tracking-map-hint");
-
-  let map;
-  let positionMarker;
-  let accuracyCircle;
-  let watchId;
-  let currentPosition;
+  const utils = window.SafeWalkUtils;
+  const tripDetails = document.querySelector("#trip-details");
+  const noTrip = document.querySelector("#no-trip");
+  const status = document.querySelector("#track-status");
+  const shareTripButton = document.querySelector("#share-trip");
+  const stopTripButton = document.querySelector("#stop-trip");
+  const shareLocationButton = document.querySelector("#share-location");
+  let trip;
 
   function setStatus(message, isError) {
     status.textContent = message;
     status.classList.toggle("error", Boolean(isError));
   }
 
-  function stopTracking(message, isError) {
-    if (watchId !== undefined) {
-      navigator.geolocation.clearWatch(watchId);
-      watchId = undefined;
+  function loadTrip() {
+    trip = utils.getItem(utils.keys.activeTrip, null);
+    if (
+      !trip ||
+      typeof trip.origin !== "string" ||
+      typeof trip.destination !== "string"
+    ) {
+      noTrip.hidden = false;
+      tripDetails.hidden = true;
+      return;
     }
 
-    startButton.disabled = false;
-    stopButton.disabled = true;
-    shareButton.disabled = true;
-    setStatus(
-      message || "Tracking is off. Your last location remains visible only on this page.",
-      isError,
-    );
+    document.querySelector("#trip-route").textContent =
+      `${utils.sanitizeText(trip.origin)} to ${utils.sanitizeText(trip.destination)}`;
+    document.querySelector("#trip-distance").textContent =
+      `${utils.sanitizeText(trip.distance, 20)} km`;
+    document.querySelector("#trip-duration").textContent =
+      `~${utils.sanitizeText(trip.duration, 20)} min`;
+    const startedAt = new Date(trip.startedAt);
+    document.querySelector("#trip-time").textContent =
+      Number.isNaN(startedAt.valueOf())
+        ? "Trip planned in this browser"
+        : `Planned ${startedAt.toLocaleString()}`;
+    tripDetails.hidden = false;
+    noTrip.hidden = true;
   }
 
-  function updatePosition(position) {
-    const { latitude, longitude, accuracy: accuracyMeters } = position.coords;
-    const latLng = [latitude, longitude];
-    currentPosition = { latitude, longitude };
-
-    if (!positionMarker) {
-      positionMarker = L.circleMarker(latLng, {
-        radius: 8,
-        color: "#fff",
-        weight: 3,
-        fillColor: "#245c46",
-        fillOpacity: 1,
-      }).addTo(map);
-      accuracyCircle = L.circle(latLng, {
-        radius: accuracyMeters,
-        color: "#438360",
-        weight: 1,
-        fillColor: "#438360",
-        fillOpacity: 0.12,
-      }).addTo(map);
-      map.setView(latLng, 16);
-    } else {
-      positionMarker.setLatLng(latLng);
-      accuracyCircle.setLatLng(latLng).setRadius(accuracyMeters);
-      map.panTo(latLng);
-    }
-
-    coordinates.textContent = `${latitude.toFixed(5)}, ${longitude.toFixed(5)}`;
-    accuracy.textContent = `Within ${Math.round(accuracyMeters)} m`;
-    lastUpdated.textContent = new Date(position.timestamp).toLocaleTimeString();
-    mapHint.hidden = true;
-    shareButton.disabled = false;
-    setStatus("Live location is updating on this device.");
-  }
-
-  function handlePositionError(error) {
-    const messages = {
-      1: "Location permission was denied. Allow location access in your browser settings, then try again.",
-      2: "Your location couldn't be determined. Check your device's location settings and try again.",
-      3: "Location request timed out. Keep tracking on to retry, or try again in a moment.",
-    };
-    shareButton.disabled = true;
-    setStatus(messages[error.code] || "Couldn't access your location. Please try again.", true);
-
-    if (error.code === 1) {
-      stopTracking(messages[error.code], true);
-    }
-  }
-
-  function startTracking() {
-    if (!window.L) {
-      setStatus("The map library didn't load. Check your connection and reload.", true);
+  async function shareTrip() {
+    if (!trip) {
       return;
     }
-    if (!navigator.geolocation) {
-      setStatus("Location isn't supported by this browser. Try a browser with geolocation support.", true);
-      return;
-    }
-    if (!window.isSecureContext) {
-      setStatus("Location requires HTTPS or localhost. Open this site from a secure connection.", true);
-      return;
-    }
-    if (watchId !== undefined) {
-      return;
-    }
-
-    startButton.disabled = true;
-    stopButton.disabled = false;
-    setStatus("Waiting for your location permission…");
-    watchId = navigator.geolocation.watchPosition(
-      updatePosition,
-      handlePositionError,
-      { enableHighAccuracy: true, timeout: 15000, maximumAge: 5000 },
-    );
-  }
-
-  async function shareLocation() {
-    if (!currentPosition) {
-      return;
-    }
-
-    const { latitude, longitude } = currentPosition;
-    const url = `https://www.openstreetmap.org/?mlat=${latitude}&mlon=${longitude}#map=16/${latitude}/${longitude}`;
-    const text = "My current SafeWalk location";
 
     try {
-      if (navigator.share) {
-        await navigator.share({ title: "My current location", text, url });
-      } else if (navigator.clipboard && window.isSecureContext) {
-        await navigator.clipboard.writeText(`${text}: ${url}`);
-        setStatus("Location link copied. You can paste it into a message.");
-      } else {
-        window.prompt("Copy your location link:", url);
-      }
+      const method = await window.SafeWalkShare.shareRoute(trip);
+      const messages = {
+        shared: "Share sheet opened. Choose a recipient to send trip details.",
+        copied: "Trip details copied. Paste them into a message to your chosen recipient.",
+        prompted: "Trip details shown for you to copy and share.",
+        cancelled: "Sharing cancelled; no message was sent.",
+      };
+      setStatus(messages[method]);
     } catch (error) {
-      if (error.name !== "AbortError") {
-        setStatus(`Couldn't share your location: ${error.message}`, true);
-      }
+      setStatus(`Couldn't share trip details: ${error.message}`, true);
     }
   }
 
-  function initialize() {
-    if (!window.L) {
-      setStatus("The map library didn't load. Check your connection and reload.", true);
-      startButton.disabled = true;
+  function endTrip() {
+    if (utils.removeItem(utils.keys.activeTrip)) {
+      trip = null;
+      tripDetails.hidden = true;
+      noTrip.hidden = false;
+      setStatus("Trip details were removed from this browser.");
+    }
+  }
+
+  function shareCurrentLocation() {
+    if (!navigator.geolocation) {
+      setStatus("Location isn't supported by this browser. You can share trip details instead.", true);
       return;
     }
 
-    map = L.map("tracking-map").setView([28.6329, 77.2195], 13);
-    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-      maxZoom: 19,
-      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
-    }).addTo(map);
-
-    startButton.addEventListener("click", startTracking);
-    stopButton.addEventListener("click", () => stopTracking());
-    shareButton.addEventListener("click", shareLocation);
-    window.addEventListener("pagehide", () => {
-      if (watchId !== undefined) {
-        navigator.geolocation.clearWatch(watchId);
-      }
-    });
+    shareLocationButton.disabled = true;
+    setStatus("Waiting for location permission…");
+    navigator.geolocation.getCurrentPosition(
+      async ({ coords }) => {
+        const latitude = coords.latitude.toFixed(5);
+        const longitude = coords.longitude.toFixed(5);
+        const mapUrl = `https://www.openstreetmap.org/?mlat=${latitude}&mlon=${longitude}#map=16/${latitude}/${longitude}`;
+        try {
+          const method = await window.SafeWalkShare.shareText(
+            `My current location (shared once at my request): ${mapUrl}`,
+          );
+          const messages = {
+            shared: "Share sheet opened. Choose a recipient to send this one-time location link.",
+            copied: "One-time location link copied. Paste it into a message to your chosen recipient.",
+            prompted: "One-time location link shown for you to copy and share.",
+            cancelled: "Sharing cancelled; no location message was sent.",
+          };
+          setStatus(messages[method]);
+        } catch (error) {
+          setStatus(`Couldn't share location: ${error.message}`, true);
+        } finally {
+          shareLocationButton.disabled = false;
+        }
+      },
+      (error) => {
+        const messages = {
+          1: "Location permission was denied. You can choose to share trip details instead.",
+          2: "Your location couldn't be determined. Try again or share trip details.",
+          3: "Location request timed out. Try again or share trip details.",
+        };
+        shareLocationButton.disabled = false;
+        setStatus(messages[error.code] || "Couldn't access your location.", true);
+      },
+      { enableHighAccuracy: false, timeout: 10000, maximumAge: 60000 },
+    );
   }
 
-  initialize();
+  shareTripButton.addEventListener("click", shareTrip);
+  stopTripButton.addEventListener("click", endTrip);
+  shareLocationButton.addEventListener("click", shareCurrentLocation);
+  loadTrip();
 })();
