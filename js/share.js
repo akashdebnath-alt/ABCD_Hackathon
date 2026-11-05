@@ -1,21 +1,22 @@
-function getLocation(cb) {
-  if (!navigator.geolocation) return cb(CENTER);
-  navigator.geolocation.getCurrentPosition(
-    p => cb([p.coords.latitude, p.coords.longitude]),
-    () => cb(CENTER)   // fallback so the demo never breaks
-  );
-}
+(function () {
+  "use strict";
 
-function whatsapp(text) {
-  window.open('https://wa.me/?text=' + encodeURIComponent(text), '_blank');
-}
+  async function shareRoute(route) {
+    const text = `My SafeWalk route: ${route.origin} to ${route.destination} (${route.distance} km, about ${route.duration} min). Demo route only; check local conditions.`;
 
-function shareLocation() {
-  getLocation(loc => whatsapp(
-    "I'm walking home. Track me here: https://maps.google.com/?q=" + loc[0] + "," + loc[1]));
-}
+    if (navigator.share) {
+      await navigator.share({ title: "My SafeWalk route", text });
+      return;
+    }
 
-function sendSOS() {
-  getLocation(loc => whatsapp(
-    "🚨 SOS! I need help. My location: https://maps.google.com/?q=" + loc[0] + "," + loc[1]));
-}
+    if (navigator.clipboard && window.isSecureContext) {
+      await navigator.clipboard.writeText(text);
+      window.alert("Route details copied. You can paste them into a message.");
+      return;
+    }
+
+    window.prompt("Copy your route details:", text);
+  }
+
+  window.SafeWalkShare = { shareRoute };
+})();
