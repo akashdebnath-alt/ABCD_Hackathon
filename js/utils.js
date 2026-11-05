@@ -6,6 +6,7 @@
     recentSearches: "safewalk.recentSearches",
     trustedContact: "safewalk.trustedContact",
     safetyChecklist: "safewalk.safetyChecklist",
+    language: "safewalk.language",
     onboardingSeen: "safewalk.onboardingSeen",
   };
   let toastTimer;

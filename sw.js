@@ -1,6 +1,6 @@
 "use strict";
 
-const CACHE_NAME = "safewalk-shell-v5";
+const CACHE_NAME = "safewalk-shell-v6";
 const APP_SHELL = [
   "./",
   "./index.html",
@@ -12,12 +12,14 @@ const APP_SHELL = [
   "./assets/icon.svg",
   "./css/style.css",
   "./js/utils.js",
+  "./js/i18n.js",
   "./js/app.js",
   "./js/map.js",
   "./js/share.js",
   "./js/track.js",
   "./js/safety.js",
   "./js/privacy.js",
+  "./js/export.js",
 ];
 
 self.addEventListener("install", (event) => {

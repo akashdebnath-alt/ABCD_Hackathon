@@ -2,6 +2,7 @@
   "use strict";
 
   const utils = window.SafeWalkUtils;
+  const i18n = window.SafeWalkI18n;
   const form = document.querySelector("#route-form");
   const originInput = document.querySelector("#origin");
   const destinationInput = document.querySelector("#destination");
@@ -34,7 +35,7 @@
   let pendingPlaces;
 
   function setStatus(message, isError) {
-    status.textContent = message;
+    status.textContent = i18n.t(message);
     status.classList.toggle("error", Boolean(isError));
   }
 
@@ -67,7 +68,7 @@
       properties.city ||
       properties.state ||
       properties.country ||
-      "Selected place";
+      i18n.t("Selected place");
     const details = [
       properties.street && properties.street !== primary
         ? properties.street
@@ -236,6 +237,7 @@
     places.forEach((place, index) => {
       const label = document.createElement("label");
       label.className = "place-choice";
+      label.dataset.noTranslate = "true";
       if (selectedIndex === index) {
         label.classList.add("selected");
       }
@@ -288,6 +290,7 @@
       const entry = document.createElement("li");
       const button = document.createElement("button");
       button.type = "button";
+      button.dataset.noTranslate = "true";
       button.textContent = `${item.origin} → ${item.destination}`;
       button.addEventListener("click", () => {
         originInput.value = item.origin;
@@ -363,9 +366,35 @@
     if (!Number.isFinite(distance) || distance <= 0) {
       return "";
     }
-    return distance >= 1000
+    const formatted = distance >= 1000
       ? `${(distance / 1000).toFixed(1)} km`
       : `${Math.round(distance)} m`;
+    return i18n.stepDistance(formatted);
+  }
+
+  function renderSavedRouteSteps(savedSteps) {
+    routeSteps.replaceChildren();
+    if (savedSteps.length === 0) {
+      const item = document.createElement("li");
+      item.textContent = i18n.t("Turn-by-turn steps are unavailable for this route.");
+      routeSteps.append(item);
+      return savedSteps;
+    }
+
+    savedSteps.forEach((step) => {
+      const item = document.createElement("li");
+      const instruction = document.createElement("span");
+      instruction.className = "step-instruction";
+      instruction.textContent = i18n.step(step.instruction);
+      item.append(instruction);
+      if (step.distance) {
+        const distance = document.createElement("span");
+        distance.className = "step-distance";
+        distance.textContent = i18n.stepDistance(step.distance);
+        item.append(distance);
+      }
+      routeSteps.append(item);
+    });
   }
 
   function renderRouteSteps(route) {
@@ -376,29 +405,7 @@
       instruction: formatStep(step),
       distance: formatStepDistance(step.distance),
     }));
-
-    routeSteps.replaceChildren();
-    if (savedSteps.length === 0) {
-      const item = document.createElement("li");
-      item.textContent = "Turn-by-turn steps are unavailable for this route.";
-      routeSteps.append(item);
-      return savedSteps;
-    }
-
-    savedSteps.forEach((step) => {
-      const item = document.createElement("li");
-      const instruction = document.createElement("span");
-      instruction.className = "step-instruction";
-      instruction.textContent = step.instruction;
-      item.append(instruction);
-      if (step.distance) {
-        const distance = document.createElement("span");
-        distance.className = "step-distance";
-        distance.textContent = step.distance;
-        item.append(distance);
-      }
-      routeSteps.append(item);
-    });
+    renderSavedRouteSteps(savedSteps);
     return savedSteps;
   }
 
@@ -419,7 +426,17 @@
       { place: destination, color: "#a52b32", label: "Destination" },
     ].forEach(({ place, color, label }) => {
       const popup = document.createElement("span");
-      popup.textContent = `${label}: ${utils.sanitizeText(place.label, 160)}`;
+      const placeLabel = place.label === "Your current location"
+        ? i18n.t(place.label)
+        : utils.sanitizeText(place.label, 160);
+      const markerLabel = document.createElement("span");
+      markerLabel.textContent = `${i18n.t(`${label}:`)} `;
+      const markerPlace = document.createElement("span");
+      if (place.label !== "Your current location") {
+        markerPlace.dataset.noTranslate = "true";
+      }
+      markerPlace.textContent = placeLabel;
+      popup.append(markerLabel, markerPlace);
       const marker = L.circleMarker(
         [place.coordinates[1], place.coordinates[0]],
         { radius: 8, color: "#fff", weight: 3, fillColor: color, fillOpacity: 1 },
@@ -438,9 +455,9 @@
     );
     const steps = renderRouteSteps(route);
     document.querySelector("#route-summary").textContent =
-      `${origin.label} to ${destination.label}`;
-    document.querySelector("#route-distance").textContent = `${distance} km`;
-    document.querySelector("#route-duration").textContent = `~${duration} min`;
+      i18n.routeTitle(origin.label, destination.label);
+    document.querySelector("#route-distance").textContent = i18n.distance(distance);
+    document.querySelector("#route-duration").textContent = i18n.duration(duration);
 
     const routeOptions = document.querySelector("#route-options");
     routeOptions.replaceChildren();
@@ -450,13 +467,16 @@
       button.className = "route-option";
       button.setAttribute("aria-pressed", String(index === selectedIndex));
       const label = document.createElement("strong");
-      label.textContent = `Route ${index + 1}${index === 0 ? " · default" : ""}`;
+      label.textContent = i18n.routeOption(index, index === 0);
       const details = document.createElement("small");
       const optionDuration = Math.max(
         1,
         Math.round((option.distance / 1000 / WALKING_SPEED_KMH) * 60),
       );
-      details.textContent = `${(option.distance / 1000).toFixed(1)} km · ~${optionDuration} min`;
+      details.textContent = i18n.walkEstimate(
+        (option.distance / 1000).toFixed(1),
+        optionDuration,
+      );
       const content = document.createElement("span");
       content.append(label, details);
       button.append(content);
@@ -498,7 +518,7 @@
 
   function setRouteButton(label, disabled) {
     submitButton.disabled = disabled;
-    submitButton.querySelector(".button-label").textContent = label;
+    submitButton.querySelector(".button-label").textContent = i18n.t(label);
   }
 
   function clearPreviousRoute() {
@@ -699,7 +719,7 @@
           coordinates: [coords.longitude, coords.latitude],
           label: "Your current location",
         };
-        originInput.value = currentOrigin.label;
+          originInput.value = i18n.t(currentOrigin.label);
         locationButton.disabled = false;
         setStatus("Starting point set. Location is only used if you request directions.");
       },
@@ -764,6 +784,20 @@
   });
   placeChoices.addEventListener("change", selectPlace);
   form.addEventListener("submit", planRoute);
+  window.addEventListener("safewalk:languagechange", () => {
+    if (currentOrigin && ["Your current location", "आपका वर्तमान स्थान"].includes(originInput.value)) {
+      originInput.value = i18n.t("Your current location");
+    }
+    if (currentRoute) {
+      document.querySelector("#route-summary").textContent =
+        i18n.routeTitle(currentRoute.origin, currentRoute.destination);
+      document.querySelector("#route-distance").textContent =
+        i18n.distance(currentRoute.distance);
+      document.querySelector("#route-duration").textContent =
+        i18n.duration(currentRoute.duration);
+      renderSavedRouteSteps(currentRoute.steps);
+    }
+  });
   locationButton.addEventListener("click", useCurrentLocation);
   shareButton.addEventListener("click", shareCurrentRoute);
   startTripButton.addEventListener("click", startTrip);

@@ -13,9 +13,11 @@
     <link rel="stylesheet" href="css/style.css">
     <title>Share your trip | SafeWalk</title>
     <script defer src="js/utils.js"></script>
+    <script defer src="js/i18n.js"></script>
     <script defer src="js/app.js"></script>
     <script defer src="js/share.js"></script>
     <script defer src="js/track.js"></script>
+    <script defer src="js/export.js"></script>
   </head>
   <body>
     <a class="skip-link" href="#main-content">Skip to main content</a>
@@ -27,6 +29,7 @@
         <a class="nav-link" href="safety.html"><span aria-hidden="true">♡</span> Safety tools</a>
       </nav>
       <a class="header-privacy" href="privacy.html"><span class="privacy-dot" aria-hidden="true"></span>Sharing is your choice</a>
+      <label class="language-picker"><span class="sr-only">Select language</span><select id="language-select" aria-label="Select language"><option value="en">English</option><option value="hi">हिन्दी</option></select></label>
     </header>
 
     <div id="offline-banner" class="offline-banner" role="status" hidden>You’re offline. Saved trip details are available; sharing and location links may require a connection.</div>
@@ -38,19 +41,23 @@
 
         <section id="trip-details" class="trip-details card-inset" aria-labelledby="trip-route" hidden>
           <div class="result-heading">
-            <div><span class="eyebrow">SAVED IN THIS BROWSER</span><h2 id="trip-route"></h2></div>
+            <div><span class="eyebrow">SAVED IN THIS BROWSER</span><h2 id="trip-route" data-no-translate></h2></div>
             <span class="demo-pill">PRIVATE</span>
           </div>
           <div class="metrics-row">
-            <div class="metric"><span class="metric-label">Distance</span><strong id="trip-distance">—</strong></div>
-            <div class="metric"><span class="metric-label">Walk estimate (4.8 km/h)</span><strong id="trip-duration">—</strong></div>
+            <div class="metric"><span class="metric-label">Distance</span><strong id="trip-distance" data-no-translate>—</strong></div>
+            <div class="metric"><span class="metric-label">Walk estimate (4.8 km/h)</span><strong id="trip-duration" data-no-translate>—</strong></div>
           </div>
-          <p id="trip-time" class="muted-copy"></p>
+          <p id="trip-time" class="muted-copy" data-no-translate></p>
           <p id="trip-estimate-note" class="muted-copy">Walk estimate assumes a steady 4.8 km/h; actual time varies with pace, crossings, terrain, and stops.</p>
           <section class="directions" aria-labelledby="trip-directions-heading">
             <h3 id="trip-directions-heading">Turn-by-turn directions</h3>
-            <ol id="trip-steps" class="route-steps"></ol>
+            <ol id="trip-steps" class="route-steps" data-no-translate></ol>
           </section>
+          <div class="button-row route-export-actions">
+            <button class="button button-secondary" type="button" data-copy-route="#trip-details">Copy directions</button>
+            <button class="button button-secondary" type="button" data-print-route="#trip-details">Print directions</button>
+          </div>
           <a id="edit-saved-route" class="button button-secondary full-button" href="index.html?editTrip=1">Edit or reopen this route</a>
           <button id="share-trip" class="button button-primary full-button" type="button">Share trip details <span aria-hidden="true">↗</span></button>
           <button id="stop-trip" class="button button-secondary full-button" type="button">Remove saved trip</button>
@@ -65,7 +72,7 @@
         <section class="location-share card-inset" aria-labelledby="location-heading">
           <div class="section-icon" aria-hidden="true">◎</div>
           <h2 id="location-heading">Share my location once</h2>
-          <p>Location sirf tab share hoti hai jab aap dabate ho. Browser permission ke baad one-time map link aapke chosen share app mein khulega.</p>
+          <p>Location is shared only when you press the button. After browser permission, a one-time map link opens in your chosen sharing app.</p>
           <button id="share-location" class="button button-secondary full-button" type="button">Get location and share once</button>
         </section>
 

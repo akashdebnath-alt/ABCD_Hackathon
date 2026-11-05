@@ -2,6 +2,7 @@
   "use strict";
 
   const utils = window.SafeWalkUtils;
+  const i18n = window.SafeWalkI18n;
   const tripDetails = document.querySelector("#trip-details");
   const noTrip = document.querySelector("#no-trip");
   const status = document.querySelector("#track-status");
@@ -12,7 +13,7 @@
   let trip;
 
   function setStatus(message, isError) {
-    status.textContent = message;
+    status.textContent = i18n.t(message);
     status.classList.toggle("error", Boolean(isError));
   }
 
@@ -28,22 +29,24 @@
       return;
     }
 
-    document.querySelector("#trip-route").textContent =
-      `${utils.sanitizeText(trip.origin)} to ${utils.sanitizeText(trip.destination)}`;
+    document.querySelector("#trip-route").textContent = i18n.routeTitle(
+      utils.sanitizeText(trip.origin),
+      utils.sanitizeText(trip.destination),
+    );
     document.querySelector("#trip-distance").textContent =
-      `${utils.sanitizeText(trip.distance, 20)} km`;
+      i18n.distance(utils.sanitizeText(trip.distance, 20));
     document.querySelector("#trip-duration").textContent =
-      `~${utils.sanitizeText(trip.duration, 20)} min`;
+      i18n.duration(utils.sanitizeText(trip.duration, 20));
     const startedAt = new Date(trip.startedAt);
     document.querySelector("#trip-time").textContent =
       Number.isNaN(startedAt.valueOf())
-        ? "Trip planned in this browser"
-        : `Planned ${startedAt.toLocaleString()}`;
+        ? i18n.t("Trip planned in this browser")
+        : `${i18n.t("Planned")} ${startedAt.toLocaleString(i18n.language === "hi" ? "hi-IN" : "en-US")}`;
     tripSteps.replaceChildren();
     const steps = Array.isArray(trip.steps) ? trip.steps : [];
     if (steps.length === 0) {
       const item = document.createElement("li");
-      item.textContent = "Turn-by-turn directions are unavailable for this saved trip.";
+      item.textContent = i18n.t("Turn-by-turn directions are unavailable for this saved trip.");
       tripSteps.append(item);
     } else {
       steps.forEach((step) => {
@@ -53,19 +56,19 @@
         const item = document.createElement("li");
         const instruction = document.createElement("span");
         instruction.className = "step-instruction";
-        instruction.textContent = step.instruction;
+        instruction.textContent = i18n.step(step.instruction);
         item.append(instruction);
         if (typeof step.distance === "string" && step.distance) {
           const distance = document.createElement("span");
           distance.className = "step-distance";
-          distance.textContent = step.distance;
+          distance.textContent = i18n.stepDistance(step.distance);
           item.append(distance);
         }
         tripSteps.append(item);
       });
       if (tripSteps.childElementCount === 0) {
         const item = document.createElement("li");
-        item.textContent = "Turn-by-turn directions are unavailable for this saved trip.";
+        item.textContent = i18n.t("Turn-by-turn directions are unavailable for this saved trip.");
         tripSteps.append(item);
       }
     }
@@ -147,5 +150,6 @@
   shareTripButton.addEventListener("click", shareTrip);
   stopTripButton.addEventListener("click", endTrip);
   shareLocationButton.addEventListener("click", shareCurrentLocation);
+  window.addEventListener("safewalk:languagechange", loadTrip);
   loadTrip();
 })();

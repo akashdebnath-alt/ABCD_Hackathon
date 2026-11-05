@@ -2,6 +2,7 @@
   "use strict";
 
   const utils = window.SafeWalkUtils;
+  const i18n = window.SafeWalkI18n;
   const alertMessage = document.querySelector("#alert-message");
   const shareAlertButton = document.querySelector("#share-alert");
   const status = document.querySelector("#safety-status");
@@ -16,7 +17,7 @@
   let selectedPersona = "Trusted contact";
 
   function setStatus(message, isError) {
-    status.textContent = message;
+    status.textContent = i18n.t(message);
     status.classList.toggle("error", Boolean(isError));
   }
 
@@ -85,9 +86,9 @@
   function updateChecklistStatus(saved) {
     const checkedCount = checklistInputs.filter((input) => input.checked).length;
     checklistProgress.value = checkedCount;
-    checklistStatus.textContent = saved
+    checklistStatus.textContent = i18n.t(saved
       ? `${checkedCount} of ${checklistInputs.length} items checked. Progress is saved on this device.`
-      : `${checkedCount} of ${checklistInputs.length} items checked. Changes couldn't be saved; they will be lost when this page closes.`;
+      : `${checkedCount} of ${checklistInputs.length} items checked. Changes couldn't be saved; they will be lost when this page closes.`);
   }
 
   function saveChecklist() {
@@ -126,9 +127,9 @@
         const contact = utils.getItem(utils.keys.trustedContact, null);
         const contactNote =
           contact && typeof contact.name === "string"
-            ? ` Please contact ${utils.sanitizeText(contact.name, 60)}.`
+            ? ` ${i18n.t("Please contact")} ${utils.sanitizeText(contact.name, 60)}.`
             : "";
-        const message = `${utils.sanitizeText(alertMessage.value, 500) || "I need help. Please contact me."}${contactNote}\nMy current location: ${mapUrl}`;
+        const message = `${utils.sanitizeText(alertMessage.value, 500) || i18n.t("I need help. Please contact me.")}${contactNote}\n${i18n.t("My current location:")} ${mapUrl}`;
 
         try {
           const method = await window.SafeWalkShare.shareText(message);
@@ -160,7 +161,7 @@
 
   function showFakeCall() {
     selectedPersona =
-      utils.sanitizeText(callerNameInput.value, 60) || "Trusted contact";
+      utils.sanitizeText(callerNameInput.value, 60) || i18n.t("Trusted contact");
     document.querySelector("#call-title").textContent = selectedPersona;
     fakeCallOverlay.hidden = false;
     document.querySelector("#close-fake-call").focus();

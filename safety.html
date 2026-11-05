@@ -13,6 +13,7 @@
     <link rel="stylesheet" href="css/style.css">
     <title>Safety tools | SafeWalk</title>
     <script defer src="js/utils.js"></script>
+    <script defer src="js/i18n.js"></script>
     <script defer src="js/app.js"></script>
     <script defer src="js/share.js"></script>
     <script defer src="js/safety.js"></script>
@@ -27,6 +28,7 @@
         <a class="nav-link" aria-current="page" href="safety.html"><span aria-hidden="true">♡</span> Safety tools</a>
       </nav>
       <a class="header-privacy" href="privacy.html"><span class="privacy-dot" aria-hidden="true"></span>No automatic alerts</a>
+      <label class="language-picker"><span class="sr-only">Select language</span><select id="language-select" aria-label="Select language"><option value="en">English</option><option value="hi">हिन्दी</option></select></label>
     </header>
 
     <div id="offline-banner" class="offline-banner" role="status" hidden>You’re offline. Emergency dial links and local demos remain available; sharing needs a supported app.</div>
@@ -103,7 +105,7 @@
             </div>
           </form>
           <div id="saved-contact" class="saved-contact" hidden>
-            <span><strong id="saved-contact-name"></strong><small id="saved-contact-number"></small></span>
+            <span><strong id="saved-contact-name" data-no-translate></strong><small id="saved-contact-number" data-no-translate></small></span>
             <a id="call-contact" class="button button-secondary" href="#">Call contact</a>
           </div>
         </section>
@@ -120,7 +122,7 @@
           <h2 id="fake-call-heading">Visual fake-call demo</h2>
           <p>This is only an on-screen demo. It does not ring, place, or receive a phone call.</p>
           <label for="caller-name">Caller name</label>
-          <input id="caller-name" type="text" maxlength="60" value="Trusted contact" autocomplete="off">
+          <input id="caller-name" type="text" maxlength="60" placeholder="Trusted contact" autocomplete="off">
           <button id="fake-call" class="button button-secondary full-button" type="button">Show demo incoming call</button>
         </section>
 
@@ -160,7 +162,7 @@
         <span class="call-demo-badge">VISUAL DEMO · NO PHONE CALL</span>
         <div class="caller-orbit" aria-hidden="true"><span>♡</span></div>
         <p class="call-label">Incoming call</p>
-        <h2 id="call-title">Caller</h2>
+        <h2 id="call-title" data-no-translate>Caller</h2>
         <p id="call-disclaimer">No call is being placed or received.</p>
         <button id="close-fake-call" class="button button-danger" type="button">Close demo</button>
       </div>

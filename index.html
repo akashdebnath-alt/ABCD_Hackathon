@@ -13,9 +13,11 @@
     <link rel="stylesheet" href="css/style.css">
     <title>Plan a walk | SafeWalk</title>
     <script defer src="js/utils.js"></script>
+    <script defer src="js/i18n.js"></script>
     <script defer src="js/app.js"></script>
     <script defer src="js/share.js"></script>
     <script defer src="js/map.js"></script>
+    <script defer src="js/export.js"></script>
   </head>
   <body>
     <a class="skip-link" href="#main-content">Skip to main content</a>
@@ -27,6 +29,7 @@
         <a class="nav-link" href="safety.html"><span aria-hidden="true">♡</span> Safety tools</a>
       </nav>
       <a class="header-privacy" href="privacy.html"><span class="privacy-dot" aria-hidden="true"></span>Privacy first</a>
+      <label class="language-picker"><span class="sr-only">Select language</span><select id="language-select" aria-label="Select language"><option value="en">English</option><option value="hi">हिन्दी</option></select></label>
     </header>
 
     <div id="offline-banner" class="offline-banner" role="status" hidden>You’re offline. Saved pages still work; place search and walking directions need an internet connection.</div>
@@ -76,20 +79,24 @@
 
         <section id="route-result" class="route-result card" aria-labelledby="route-summary" hidden>
           <div class="result-heading">
-            <div><span class="eyebrow">ROUTE SUMMARY</span><h2 id="route-summary">Route details</h2></div>
+            <div><span class="eyebrow">ROUTE SUMMARY</span><h2 id="route-summary" data-no-translate>Route details</h2></div>
             <button id="share-route" class="button button-secondary compact-button" type="button">Share</button>
           </div>
           <div class="metrics-row">
-            <div class="metric"><span class="metric-label">Distance</span><strong id="route-distance">—</strong></div>
-            <div class="metric"><span class="metric-label">Walk estimate (4.8 km/h)</span><strong id="route-duration">—</strong></div>
+            <div class="metric"><span class="metric-label">Distance</span><strong id="route-distance" data-no-translate>—</strong></div>
+            <div class="metric"><span class="metric-label">Walk estimate (4.8 km/h)</span><strong id="route-duration" data-no-translate>—</strong></div>
           </div>
           <h3 class="route-options-heading">Compare available walking routes</h3>
           <div id="route-options" class="route-options" role="group" aria-label="Available walking routes"></div>
           <p class="muted-copy">Estimated at a steady 4.8 km/h. Your actual time may vary with pace, crossings, terrain, and stops.</p>
           <section class="directions" aria-labelledby="directions-heading">
             <h3 id="directions-heading">Turn-by-turn directions</h3>
-            <ol id="route-steps" class="route-steps"></ol>
+            <ol id="route-steps" class="route-steps" data-no-translate></ol>
           </section>
+          <div class="button-row route-export-actions">
+            <button class="button button-secondary" type="button" data-copy-route="#route-result">Copy directions</button>
+            <button class="button button-secondary" type="button" data-print-route="#route-result">Print directions</button>
+          </div>
           <p class="disclaimer">This route and time estimate are not a safety assessment. Check local conditions and trusted official sources before your walk.</p>
           <button id="edit-route" class="button button-secondary full-button" type="button">Edit route</button>
           <button id="start-trip" class="button button-primary full-button" type="button" hidden>Continue to trip sharing <span aria-hidden="true">→</span></button>
